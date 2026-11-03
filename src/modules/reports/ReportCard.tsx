@@ -19,9 +19,11 @@ export const ReportCard: React.FC<ReportCardProps> = ({
   const { currentUser } = useAuth();
   const isOwner =
     currentUser?.id !== undefined && String(currentUser.id) === String(report.userId);
+  const isEditor = currentUser?.role === 'EDITOR';
   const isAdmin = currentUser?.role === 'ADMIN';
   const isModerator = currentUser?.role === 'MODERATOR';
-  const canManage = isOwner || isAdmin || isModerator;
+  const canEdit = isOwner || isEditor || isAdmin || isModerator;
+  const canDelete = isOwner || isAdmin || isModerator;
   const canChangeStatus = isAdmin || isModerator;
 
   return (
@@ -53,25 +55,25 @@ export const ReportCard: React.FC<ReportCardProps> = ({
           </Text>
         )}
 
-        {(canManage || canChangeStatus) && (
+        {(canEdit || canDelete || canChangeStatus) && (
           <View className="flex-row gap-x-6 border-t border-gray-100 pt-2">
-            {canManage && (
-              <>
-                <TouchableOpacity
-                  className="py-2"
-                  onPress={() => onEdit(report)}
-                  accessibilityRole="button"
-                >
-                  <Text className="font-semibold text-blue-600">Editar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="py-2"
-                  onPress={() => onDelete(report)}
-                  accessibilityRole="button"
-                >
-                  <Text className="font-semibold text-red-600">Eliminar</Text>
-                </TouchableOpacity>
-              </>
+            {canEdit && (
+              <TouchableOpacity
+                className="py-2"
+                onPress={() => onEdit(report)}
+                accessibilityRole="button"
+              >
+                <Text className="font-semibold text-blue-600">Editar</Text>
+              </TouchableOpacity>
+            )}
+            {canDelete && (
+              <TouchableOpacity
+                className="py-2"
+                onPress={() => onDelete(report)}
+                accessibilityRole="button"
+              >
+                <Text className="font-semibold text-red-600">Eliminar</Text>
+              </TouchableOpacity>
             )}
             {canChangeStatus && (
               <TouchableOpacity

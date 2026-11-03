@@ -7,6 +7,7 @@ export interface ObjectItemCardProps {
   item: ObjectItem;
   onEdit: (item: ObjectItem) => void;
   onDelete: (item: ObjectItem) => void;
+  onSelect?: (item: ObjectItem) => void;
 }
 
 interface ObjectItemCardBaseProps extends ObjectItemCardProps {
@@ -18,6 +19,7 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
   itemType,
   onEdit,
   onDelete,
+  onSelect,
 }) => {
   const { currentUser } = useAuth();
   const isOwner =
@@ -63,6 +65,16 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
           {itemType === 'perdido' ? 'Objeto perdido' : 'Objeto encontrado'}
           {formatCreatedAt(item.createdAt) ? ` · ${formatCreatedAt(item.createdAt)}` : ''}
         </Text>
+
+        {onSelect && (
+          <TouchableOpacity
+            className="mb-2 self-start py-2"
+            onPress={() => onSelect(item)}
+            accessibilityRole="button"
+          >
+            <Text className="font-semibold text-blue-600">Ver detalles</Text>
+          </TouchableOpacity>
+        )}
 
         {canManage && (
           <View className="flex-row gap-x-6 border-t border-gray-100 pt-2">

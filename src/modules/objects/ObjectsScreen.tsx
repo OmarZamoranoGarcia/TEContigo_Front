@@ -3,7 +3,10 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { FoundItemsScreen } from './foundItems/FoundItemsScreen';
 import { LostItemsScreen } from './lostItems/LostItemsScreen';
 
-export const ObjectsScreen: React.FC = () => {
+export const ObjectsScreen: React.FC<{
+  onOpenRequests: () => void;
+  onRefreshReady: (refresh: (() => Promise<void>) | null) => void;
+}> = ({ onOpenRequests, onRefreshReady }) => {
   const [activeList, setActiveList] = useState<'found' | 'lost'>('found');
 
   return (
@@ -43,7 +46,9 @@ export const ObjectsScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {activeList === 'found' ? <FoundItemsScreen /> : <LostItemsScreen />}
+      {activeList === 'found'
+        ? <FoundItemsScreen onOpenRequests={onOpenRequests} onRefreshReady={onRefreshReady} />
+        : <LostItemsScreen onOpenRequests={onOpenRequests} onRefreshReady={onRefreshReady} />}
     </View>
   );
 };

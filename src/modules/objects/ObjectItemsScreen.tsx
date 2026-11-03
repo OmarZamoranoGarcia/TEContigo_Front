@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../AuthContext';
 import {
   objectsApi,
@@ -8,57 +8,66 @@ import {
   type ObjectItemKind,
 } from '../../api/objects/objectsApi';
 import { ObjectItemFormModal } from './ObjectItemFormModal';
+import { ObjectItemDetailsScreen } from './ObjectItemDetailsScreen';
 import { FoundItemCard } from './foundItems/FoundItemCard';
 import { LostItemCard } from './lostItems/LostItemCard';
+import { PaginationControls } from '../../components/PaginationControls';
 
 interface ObjectItemsScreenProps {
   kind: ObjectItemKind;
+  onOpenRequests: () => void;
+  onRefreshReady: (refresh: (() => Promise<void>) | null) => void;
 }
 
-export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) => {
+export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({
+  kind,
+  onOpenRequests,
+  onRefreshReady,
+}) => {
   const { accessToken } = useAuth();
   const [items, setItems] = useState<ObjectItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [itemBeingEdited, setItemBeingEdited] = useState<ObjectItem | null>(null);
+  const [itemBeingViewed, setItemBeingViewed] = useState<ObjectItem | null>(null);
 
   const isLost = kind === 'lost';
   const itemType = isLost ? 'perdido' : 'encontrado';
   const title = isLost ? 'Objetos perdidos' : 'Objetos encontrados';
 
-  const loadItems = useCallback(async (requestedPage = 1, append = false) => {
+  const loadItems = useCallback(async (
+    requestedPage = 1,
+    refresh = false
+  ): Promise<ObjectItem[] | null> => {
     if (!accessToken) {
       setItems([]);
       setIsLoading(false);
-      setIsLoadingMore(false);
-      setHasMore(false);
-      return;
+      setPageNumber(1);
+      setTotalPages(1);
+      return null;
     }
 
-    if (append) {
-      setIsLoadingMore(true);
-    } else {
+    if (!refresh) {
       setIsLoading(true);
     }
     setErrorMessage(null);
 
     try {
       const page = await objectsApi.list(kind, accessToken, requestedPage);
-      setItems((current) => (append ? [...current, ...page.items] : page.items));
+      setItems(page.items);
       setPageNumber(page.pageNumber);
-      setHasMore(page.pageNumber < page.totalPages);
+      setTotalPages(page.totalPages);
+      return page.items;
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'No se pudieron cargar los objetos.'
       );
+      return null;
     } finally {
-      if (append) {
-        setIsLoadingMore(false);
-      } else {
+      if (!refresh) {
         setIsLoading(false);
       }
     }
@@ -67,6 +76,14 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
   useEffect(() => {
     void loadItems();
   }, [loadItems]);
+
+  useEffect(() => {
+    if (itemBeingViewed) return;
+    onRefreshReady(async () => {
+      await loadItems(pageNumber, true);
+    });
+    return () => onRefreshReady(null);
+  }, [itemBeingViewed, loadItems, onRefreshReady, pageNumber]);
 
   const showRequestError = (error: unknown) => {
     Alert.alert(
@@ -84,12 +101,29 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
     try {
       if (itemBeingEdited) {
         await objectsApi.update(kind, itemBeingEdited.id, fields, accessToken);
+        const updatedItems = await loadItems(pageNumber);
+        const updatedItem = updatedItems?.find(
+          (item) => String(item.id) === String(itemBeingEdited.id)
+        );
+        if (
+          !updatedItem ||
+          updatedItem.category !== fields.category ||
+          updatedItem.article !== fields.article ||
+          updatedItem.color !== fields.color ||
+          updatedItem.location !== fields.location ||
+          updatedItem.description !== fields.description ||
+          normalizeStatus(updatedItem.status) !== normalizeStatus(fields.status)
+        ) {
+          throw new Error(
+            'El servidor aceptó la edición, pero al volver a consultar el objeto siguen apareciendo los datos anteriores. No se confirmó que los cambios se guardaran.'
+          );
+        }
       } else {
         await objectsApi.create(kind, fields, accessToken);
+        await loadItems();
       }
       setIsFormVisible(false);
       setItemBeingEdited(null);
-      await loadItems();
     } catch (error) {
       showRequestError(error);
     }
@@ -129,6 +163,18 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
     setIsFormVisible(true);
   };
 
+  if (itemBeingViewed) {
+    return (
+      <ObjectItemDetailsScreen
+        item={itemBeingViewed}
+        kind={kind}
+        onBack={() => setItemBeingViewed(null)}
+        onOpenRequests={onOpenRequests}
+        onRefreshReady={onRefreshReady}
+      />
+    );
+  }
+
   return (
     <View>
       <View className="mb-4 flex-row items-center justify-between">
@@ -142,7 +188,7 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
         </TouchableOpacity>
       </View>
 
-      {isLoading ? (
+      {isLoading && items.length === 0 ? (
         <ActivityIndicator className="my-8" size="large" color="#2563eb" />
       ) : errorMessage && items.length === 0 ? (
         <View className="rounded-xl border border-red-200 bg-red-50 p-4">
@@ -161,8 +207,8 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
             <View className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
               <Text className="mb-3 text-red-700">{errorMessage}</Text>
               <TouchableOpacity
-                onPress={() => void loadItems(pageNumber + 1, true)}
-                disabled={isLoadingMore}
+                onPress={() => void loadItems(pageNumber, true)}
+                disabled={isLoading}
                 accessibilityRole="button"
               >
                 <Text className="font-bold text-blue-700">Reintentar</Text>
@@ -176,6 +222,7 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
                 item={item}
                 onEdit={openEditForm}
                 onDelete={handleDelete}
+                onSelect={setItemBeingViewed}
               />
             ) : (
               <FoundItemCard
@@ -183,21 +230,16 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
                 item={item}
                 onEdit={openEditForm}
                 onDelete={handleDelete}
+                onSelect={setItemBeingViewed}
               />
             )
           )}
-          {hasMore && (
-            <TouchableOpacity
-              className="mb-4 items-center rounded-lg border border-blue-200 py-3"
-              onPress={() => void loadItems(pageNumber + 1, true)}
-              disabled={isLoadingMore}
-              accessibilityRole="button"
-            >
-              <Text className="font-semibold text-blue-700">
-                {isLoadingMore ? 'Cargando...' : 'Cargar más objetos'}
-              </Text>
-            </TouchableOpacity>
-          )}
+          <PaginationControls
+            pageNumber={pageNumber}
+            totalPages={totalPages}
+            onPageChange={(page) => void loadItems(page)}
+            disabled={isLoading}
+          />
         </>
       )}
 
@@ -214,3 +256,12 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({ kind }) =>
     </View>
   );
 };
+
+function normalizeStatus(status: string): string {
+  return status
+    .trim()
+    .toLocaleUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\s-]/g, '_');
+}

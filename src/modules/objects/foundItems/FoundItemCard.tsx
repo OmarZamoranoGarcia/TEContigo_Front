@@ -1,13 +1,7 @@
 import React from 'react';
-import type { ObjectItem } from '../../../api/objects/objectsApi';
+import type { ObjectItemCardProps } from '../ObjectItemCard';
 import { ObjectItemCard } from '../ObjectItemCard';
 
-interface FoundItemCardProps {
-  item: ObjectItem;
-  onEdit: (item: ObjectItem) => void;
-  onDelete: (item: ObjectItem) => void;
-}
-
-export const FoundItemCard: React.FC<FoundItemCardProps> = (props) => (
+export const FoundItemCard: React.FC<ObjectItemCardProps> = (props) => (
   <ObjectItemCard {...props} itemType="encontrado" />
 );

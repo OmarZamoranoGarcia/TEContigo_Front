@@ -4,7 +4,7 @@ import type { LoginResponse } from './api/auth/authApi';
 import { authApi } from './api/auth/authApi';
 import { ApiError } from './api/auth/client';
 
-export type Role = 'USER' | 'MODERATOR' | 'ADMIN';
+export type Role = 'USER' | 'EDITOR' | 'MODERATOR' | 'ADMIN';
 
 export interface User {
   id?: string;
@@ -130,6 +130,7 @@ function createUserFromToken(accessToken: string, email: string, responseRole: s
     ...(id !== undefined ? { id } : {}),
     email: tokenEmail ?? email,
     ...(normalizedRole === 'USER' ||
+    normalizedRole === 'EDITOR' ||
     normalizedRole === 'MODERATOR' ||
     normalizedRole === 'ADMIN'
       ? { role: normalizedRole }

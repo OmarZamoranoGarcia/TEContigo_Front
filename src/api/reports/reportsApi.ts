@@ -50,7 +50,7 @@ export const reportsApi = {
   list: async (
     token: string,
     pageNumber = 1,
-    pageSize = 10
+    pageSize = 20
   ): Promise<ReportPage> => {
     const response = await request<unknown>(
       `/api/Reports?PageNumber=${pageNumber}&PageSize=${pageSize}`,
