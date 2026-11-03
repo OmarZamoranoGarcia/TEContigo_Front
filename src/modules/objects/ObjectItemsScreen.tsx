@@ -178,7 +178,7 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({
   return (
     <View>
       <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-xl font-bold text-gray-900">{title}</Text>
+        <Text className="text-xl font-bold text-gray-900 dark:text-white">{title}</Text>
         <TouchableOpacity
           className="rounded-lg bg-blue-600 px-4 py-3"
           onPress={openCreateForm}
@@ -191,27 +191,27 @@ export const ObjectItemsScreen: React.FC<ObjectItemsScreenProps> = ({
       {isLoading && items.length === 0 ? (
         <ActivityIndicator className="my-8" size="large" color="#2563eb" />
       ) : errorMessage && items.length === 0 ? (
-        <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-          <Text className="mb-3 text-red-700">{errorMessage}</Text>
+        <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+          <Text className="mb-3 text-red-700 dark:text-red-400">{errorMessage}</Text>
           <TouchableOpacity onPress={() => void loadItems()} accessibilityRole="button">
-            <Text className="font-bold text-blue-700">Reintentar</Text>
+            <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
           </TouchableOpacity>
         </View>
       ) : items.length === 0 ? (
-        <Text className="py-8 text-center text-gray-500">
+        <Text className="py-8 text-center text-gray-500 dark:text-gray-400">
           Todavía no hay objetos {itemType === 'perdido' ? 'perdidos' : 'encontrados'}.
         </Text>
       ) : (
         <>
           {errorMessage && (
-            <View className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
-              <Text className="mb-3 text-red-700">{errorMessage}</Text>
+            <View className="mb-4 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+              <Text className="mb-3 text-red-700 dark:text-red-400">{errorMessage}</Text>
               <TouchableOpacity
                 onPress={() => void loadItems(pageNumber, true)}
                 disabled={isLoading}
                 accessibilityRole="button"
               >
-                <Text className="font-bold text-blue-700">Reintentar</Text>
+                <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
               </TouchableOpacity>
             </View>
           )}

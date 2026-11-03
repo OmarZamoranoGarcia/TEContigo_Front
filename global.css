@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .title1 {
+    @apply text-3xl font-bold text-blue-900 dark:text-white mb-2 text-center;
+  }
+  .title2 {
+    @apply text-base text-gray-500 dark:text-gray-400 mb-8 text-center;
+  }
+  .title3 {
+    @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1;
+  }
+  .title4 {
+    @apply text-center text-blue-600 dark:text-blue-400 font-semibold;
+  }
+  .reportcard {
+    @apply bg-white dark:bg-gray-800;
+  }
+  .bg-publicado {
+    @apply bg-yellow-100 dark:bg-yellow-900/40;
+  }
+  .text-publicado {
+    @apply text-yellow-800 dark:text-yellow-300;
+  }
+  .bg-proceso {
+    @apply bg-blue-100 dark:bg-blue-900/40;
+  }
+  .text-proceso {
+    @apply text-blue-800 dark:text-blue-300;
+  }
+  .bg-terminado {
+    @apply bg-green-100 dark:bg-green-900/40;
+  }
+  .text-terminado {
+    @apply text-green-800 dark:text-green-300;
+  }
+}

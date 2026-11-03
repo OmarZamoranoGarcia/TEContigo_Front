@@ -29,7 +29,7 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
     (currentUser?.role === 'USER' && isOwner);
 
   return (
-    <View className="mb-4 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+    <View className="mb-4 overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
       {item.photoUrl && (
         <Image
           source={{ uri: item.photoUrl }}
@@ -41,15 +41,21 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
 
       <View className="p-4">
         <View className="mb-2 flex-row items-start justify-between">
-          <Text className="mr-2 flex-1 text-lg font-bold text-gray-900">{item.article}</Text>
+          <Text className="mr-2 flex-1 text-lg font-bold text-gray-900 dark:text-white">
+            {item.article}
+          </Text>
           <View
             className={`rounded-full px-2 py-1 ${
-              normalizeStatus(item.status) === 'DEVUELTO' ? 'bg-green-100' : 'bg-blue-100'
+              normalizeStatus(item.status) === 'DEVUELTO'
+                ? 'bg-green-100 dark:bg-green-900/40'
+                : 'bg-blue-100 dark:bg-blue-900/40'
             }`}
           >
             <Text
               className={`text-xs font-semibold ${
-                normalizeStatus(item.status) === 'DEVUELTO' ? 'text-green-800' : 'text-blue-800'
+                normalizeStatus(item.status) === 'DEVUELTO'
+                  ? 'text-green-800 dark:text-green-300'
+                  : 'text-blue-800 dark:text-blue-300'
               }`}
             >
               {item.status}
@@ -57,10 +63,10 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
           </View>
         </View>
 
-        <Text className="mb-2 font-medium text-blue-600">{item.category}</Text>
-        <Text className="mb-1 text-gray-600">Color: {item.color}</Text>
-        <Text className="mb-2 text-gray-600">Lugar: {item.location}</Text>
-        <Text className="mb-3 text-base text-gray-600">{item.description}</Text>
+        <Text className="mb-2 font-medium text-blue-600 dark:text-blue-400">{item.category}</Text>
+        <Text className="mb-1 text-gray-600 dark:text-gray-300">Color: {item.color}</Text>
+        <Text className="mb-2 text-gray-600 dark:text-gray-300">Lugar: {item.location}</Text>
+        <Text className="mb-3 text-base text-gray-600 dark:text-gray-200">{item.description}</Text>
         <Text className="mb-3 text-xs text-gray-400">
           {itemType === 'perdido' ? 'Objeto perdido' : 'Objeto encontrado'}
           {formatCreatedAt(item.createdAt) ? ` · ${formatCreatedAt(item.createdAt)}` : ''}
@@ -72,25 +78,25 @@ export const ObjectItemCard: React.FC<ObjectItemCardBaseProps> = ({
             onPress={() => onSelect(item)}
             accessibilityRole="button"
           >
-            <Text className="font-semibold text-blue-600">Ver detalles</Text>
+            <Text className="font-semibold text-blue-600 dark:text-blue-400">Ver detalles</Text>
           </TouchableOpacity>
         )}
 
         {canManage && (
-          <View className="flex-row gap-x-6 border-t border-gray-100 pt-2">
+          <View className="flex-row gap-x-3 border-t border-gray-200 dark:border-gray-700 pt-3">
             <TouchableOpacity
-              className="py-2"
+              className="items-center justify-center rounded-full border border-blue-200 bg-blue-100 px-4 py-1.5 dark:border-blue-800 dark:bg-blue-500"
               onPress={() => onEdit(item)}
               accessibilityRole="button"
             >
-              <Text className="font-semibold text-blue-600">Editar</Text>
+              <Text className="text-sm font-semibold text-blue-700 dark:text-white">Editar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="py-2"
+              className="items-center justify-center rounded-full border border-red-200 bg-red-100 px-4 py-1.5 dark:border-red-800 dark:bg-red-500"
               onPress={() => onDelete(item)}
               accessibilityRole="button"
             >
-              <Text className="font-semibold text-red-600">Eliminar</Text>
+              <Text className="text-sm font-semibold text-red-700 dark:text-white">Eliminar</Text>
             </TouchableOpacity>
           </View>
         )}

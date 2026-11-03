@@ -94,7 +94,7 @@ export const MatchesListScreen: React.FC<MatchesListScreenProps> = ({
           }
           renderItem={({ item }) => (
             <View
-              className={`mb-3 rounded-xl border border-gray-200 bg-white p-4 ${
+              className={`mb-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 ${
                 item.status === 'Cerrado' ? 'opacity-60' : ''
               }`}
             >
@@ -108,18 +108,18 @@ export const MatchesListScreen: React.FC<MatchesListScreenProps> = ({
                 </View>
                 <View className="mt-3 flex-row items-center justify-between">
                   <View>
-                    <Text className="font-bold text-blue-700">
+                    <Text className="font-bold text-blue-700 dark:text-blue-400">
                       {Math.round(item.matchPercentage)}% · {similarityLabel(item.matchPercentage)}
                     </Text>
-                    <Text className="mt-1 text-xs text-gray-500">
+                    <Text className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       {formatDate(item.createdAt)}
                     </Text>
                   </View>
-                  <Text className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
+                  <Text className="rounded-full bg-blue-50 dark:bg-blue-900/40 px-3 py-1 text-xs font-semibold text-blue-800 dark:text-blue-300">
                     {item.status}
                   </Text>
                 </View>
-                <View className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
+                <View className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
                   <View
                     className="h-full rounded-full bg-blue-600"
                     style={{ width: `${Math.max(0, Math.min(100, item.matchPercentage))}%` }}
@@ -135,7 +135,7 @@ export const MatchesListScreen: React.FC<MatchesListScreenProps> = ({
                   <Text className="font-bold text-white">Ir al chat</Text>
                 </TouchableOpacity>
               ) : item.status === 'Cerrado' ? (
-                <Text className="mt-3 font-semibold text-gray-600">Cerrado</Text>
+                <Text className="mt-3 font-semibold text-gray-600 dark:text-gray-400">Cerrado</Text>
               ) : null}
             </View>
           )}
@@ -292,10 +292,10 @@ export const MatchDetailsScreen: React.FC<MatchDetailsScreenProps> = ({
               isMine={userId !== null && match.foundItem.userId === userId}
             />
           </View>
-          <Text className="mt-4 text-lg font-bold text-blue-800">
+          <Text className="mt-4 text-lg font-bold text-blue-800 dark:text-blue-400">
             Coincidencia {Math.round(match.matchPercentage)}% · {similarityLabel(match.matchPercentage)}
           </Text>
-          <Text className="mt-2 text-gray-600">
+          <Text className="mt-2 text-gray-600 dark:text-gray-300">
             Estado: {match.status} · {formatDate(match.createdAt)}
           </Text>
 
@@ -308,10 +308,10 @@ export const MatchDetailsScreen: React.FC<MatchDetailsScreenProps> = ({
               <Text className="font-bold text-white">Ir al chat</Text>
             </TouchableOpacity>
           ) : match.status === 'Pendiente' && canRequestChat ? (
-            <View className="mt-5 flex-row items-center justify-between rounded-xl border border-blue-100 bg-white p-4">
+            <View className="mt-5 flex-row items-center justify-between rounded-xl border border-blue-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
               <View className="mr-3 flex-1">
-                <Text className="font-bold text-gray-900">Quiero chatear</Text>
-                <Text className="mt-1 text-sm text-gray-600">
+                <Text className="font-bold text-gray-900 dark:text-white">Quiero chatear</Text>
+                <Text className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                   {ownFlag && !otherFlag
                     ? 'Esperando a que la otra persona acepte'
                     : !ownFlag && otherFlag
@@ -329,11 +329,11 @@ export const MatchDetailsScreen: React.FC<MatchDetailsScreenProps> = ({
               />
             </View>
           ) : match.status === 'Cerrado' ? (
-            <Text className="mt-5 rounded-lg bg-gray-100 p-4 text-gray-600">
+            <Text className="mt-5 rounded-lg bg-gray-100 dark:bg-gray-800 p-4 text-gray-600 dark:text-gray-300">
               Este match está cerrado y solo puede consultarse.
             </Text>
           ) : (
-            <Text className="mt-5 rounded-lg bg-gray-100 p-4 text-gray-600">
+            <Text className="mt-5 rounded-lg bg-gray-100 dark:bg-gray-800 p-4 text-gray-600 dark:text-gray-300">
               Vista de solo lectura.
             </Text>
           )}
@@ -347,22 +347,24 @@ const MatchObjectPreview: React.FC<{
   label: string;
   item: Match['lostItem'];
 }> = ({ label, item }) => (
-  <View className="flex-1 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+  <View className="flex-1 overflow-hidden rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
     {item.photoUrl ? (
       <Image
         source={{ uri: item.photoUrl }}
-        className="h-24 w-full bg-gray-100"
+        className="h-24 w-full bg-gray-100 dark:bg-gray-700"
         resizeMode="cover"
       />
     ) : (
-      <View className="h-24 items-center justify-center bg-gray-100">
+      <View className="h-24 items-center justify-center bg-gray-100 dark:bg-gray-700">
         <Text className="text-xs text-gray-400">Sin foto</Text>
       </View>
     )}
     <View className="p-2">
-      <Text className="text-xs text-gray-500">{label}</Text>
-      <Text className="font-semibold text-gray-900" numberOfLines={1}>{item.article}</Text>
-      <Text className="text-xs text-gray-500" numberOfLines={1}>
+      <Text className="text-xs text-gray-500 dark:text-gray-400">{label}</Text>
+      <Text className="font-semibold text-gray-900 dark:text-white" numberOfLines={1}>
+        {item.article}
+      </Text>
+      <Text className="text-xs text-gray-500 dark:text-gray-400" numberOfLines={1}>
         {item.color} · {item.location}
       </Text>
     </View>
@@ -374,28 +376,30 @@ const MatchObjectDetails: React.FC<{
   item: Match['lostItem'];
   isMine: boolean;
 }> = ({ label, item, isMine }) => (
-  <View className="flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white">
+  <View className="flex-1 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
     {item.photoUrl ? (
       <Image
         source={{ uri: item.photoUrl }}
-        className="h-36 w-full bg-gray-100"
+        className="h-36 w-full bg-gray-100 dark:bg-gray-700"
         resizeMode="cover"
       />
     ) : (
-      <View className="h-36 items-center justify-center bg-gray-100">
-        <Text className="text-gray-500">Sin foto</Text>
+      <View className="h-36 items-center justify-center bg-gray-100 dark:bg-gray-700">
+        <Text className="text-gray-500 dark:text-gray-400">Sin foto</Text>
       </View>
     )}
     <View className="p-3">
-      <Text className="text-xs font-semibold text-blue-700">
+      <Text className="text-xs font-semibold text-blue-700 dark:text-blue-400">
         {label} · {isMine ? 'Mi objeto' : 'Objeto de la otra persona'}
       </Text>
-      <Text className="mt-1 text-base font-bold text-gray-900">{item.article}</Text>
-      <Text className="mt-2 text-sm text-gray-600">Categoría: {item.category}</Text>
-      <Text className="text-sm text-gray-600">Color: {item.color}</Text>
-      <Text className="text-sm text-gray-600">Lugar: {item.location}</Text>
-      <Text className="mt-2 text-sm text-gray-700">{item.description}</Text>
-      <Text className="mt-2 text-xs text-gray-500">Estado del objeto: {item.status}</Text>
+      <Text className="mt-1 text-base font-bold text-gray-900 dark:text-white">{item.article}</Text>
+      <Text className="mt-2 text-sm text-gray-600 dark:text-gray-300">Categoría: {item.category}</Text>
+      <Text className="text-sm text-gray-600 dark:text-gray-300">Color: {item.color}</Text>
+      <Text className="text-sm text-gray-600 dark:text-gray-300">Lugar: {item.location}</Text>
+      <Text className="mt-2 text-sm text-gray-700 dark:text-gray-200">{item.description}</Text>
+      <Text className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        Estado del objeto: {item.status}
+      </Text>
     </View>
   </View>
 );
@@ -403,9 +407,9 @@ const MatchObjectDetails: React.FC<{
 const PageHeader: React.FC<{ title: string; onBack: () => void }> = ({ title, onBack }) => (
   <View className="mb-4 flex-row items-center">
     <TouchableOpacity className="mr-3 py-2" onPress={onBack} accessibilityRole="button">
-      <Text className="font-semibold text-blue-600">‹ Atrás</Text>
+      <Text className="font-semibold text-blue-600 dark:text-blue-400">‹ Atrás</Text>
     </TouchableOpacity>
-    <Text className="flex-1 text-2xl font-bold text-blue-900">{title}</Text>
+    <Text className="flex-1 text-2xl font-bold text-blue-900 dark:text-white">{title}</Text>
   </View>
 );
 
@@ -413,16 +417,16 @@ const RetryMessage: React.FC<{ message: string; onRetry: () => void }> = ({
   message,
   onRetry,
 }) => (
-  <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-    <Text className="mb-3 text-red-700">{message}</Text>
+  <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+    <Text className="mb-3 text-red-700 dark:text-red-400">{message}</Text>
     <TouchableOpacity onPress={onRetry} accessibilityRole="button">
-      <Text className="font-bold text-blue-700">Reintentar</Text>
+      <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
     </TouchableOpacity>
   </View>
 );
 
 const StateMessage: React.FC<{ message: string }> = ({ message }) => (
-  <Text className="py-8 text-center text-gray-500">{message}</Text>
+  <Text className="py-8 text-center text-gray-500 dark:text-gray-400">{message}</Text>
 );
 
 function similarityLabel(percentage: number): string {

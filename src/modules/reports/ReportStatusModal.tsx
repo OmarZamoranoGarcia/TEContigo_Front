@@ -30,19 +30,21 @@ export const ReportStatusModal: React.FC<ReportStatusModalProps> = ({
 }) => (
   <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
     <View className="flex-1 justify-center bg-black/40 px-6">
-      <View className="rounded-xl bg-white p-5">
-        <Text className="mb-4 text-xl font-bold text-gray-900">Cambiar estado</Text>
+      <View className="rounded-xl bg-white dark:bg-gray-800 p-5">
+        <Text className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Cambiar estado</Text>
         {REPORT_STATUSES.map(({ label, value }) => (
           <TouchableOpacity
             key={value}
-            className="border-b border-gray-100 py-3"
+            className="border-b border-gray-100 dark:border-gray-700 py-3"
             onPress={() => onSelect(value)}
             accessibilityRole="button"
             disabled={normalizeStatus(currentStatus) === value}
           >
             <Text
               className={`font-semibold ${
-                normalizeStatus(currentStatus) === value ? 'text-gray-400' : 'text-blue-600'
+                normalizeStatus(currentStatus) === value
+                  ? 'text-gray-400 dark:text-gray-500'
+                  : 'text-blue-600 dark:text-blue-400'
               }`}
             >
               {label}
@@ -50,7 +52,7 @@ export const ReportStatusModal: React.FC<ReportStatusModalProps> = ({
           </TouchableOpacity>
         ))}
         <TouchableOpacity className="mt-3 self-end px-3 py-2" onPress={onCancel}>
-          <Text className="font-semibold text-gray-600">Cancelar</Text>
+          <Text className="font-semibold text-gray-600 dark:text-gray-300">Cancelar</Text>
         </TouchableOpacity>
       </View>
     </View>

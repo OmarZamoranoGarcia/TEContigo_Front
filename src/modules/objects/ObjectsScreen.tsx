@@ -11,7 +11,7 @@ export const ObjectsScreen: React.FC<{
 
   return (
     <View>
-      <View className="mb-5 flex-row rounded-xl bg-blue-100 p-1">
+      <View className="mb-5 flex-row rounded-xl bg-blue-100 dark:bg-gray-800 p-1">
         <TouchableOpacity
           className={`flex-1 items-center rounded-lg py-3 ${
             activeList === 'found' ? 'bg-blue-600' : ''
@@ -22,7 +22,7 @@ export const ObjectsScreen: React.FC<{
         >
           <Text
             className={`font-semibold ${
-              activeList === 'found' ? 'text-white' : 'text-blue-700'
+              activeList === 'found' ? 'text-white' : 'text-blue-700 dark:text-blue-400'
             }`}
           >
             Encontrados
@@ -38,7 +38,7 @@ export const ObjectsScreen: React.FC<{
         >
           <Text
             className={`font-semibold ${
-              activeList === 'lost' ? 'text-white' : 'text-blue-700'
+              activeList === 'lost' ? 'text-white' : 'text-blue-700 dark:text-blue-400'
             }`}
           >
             Perdidos

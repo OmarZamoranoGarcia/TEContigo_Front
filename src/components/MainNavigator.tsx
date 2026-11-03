@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import { useColorScheme } from 'nativewind';
+import { Feather } from '@expo/vector-icons';
 import { reportsApi } from '../api/reports/reportsApi';
 import type { Report, ReportFields } from '../api/reports/reportsApi';
 import { ReportCard } from '../modules/reports/ReportCard';
@@ -25,6 +27,7 @@ import { UsersCrud } from '../modules/monitoring/UsersCrud';
 export const MainNavigator = () => {
   const [activeTab, setActiveTab] = useState('Avisos');
   const { accessToken, currentUser, logout } = useAuth();
+  const { colorScheme, toggleColorScheme } = useColorScheme();
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoadingReports, setIsLoadingReports] = useState(true);
   const [isRefreshingReports, setIsRefreshingReports] = useState(false);
@@ -257,11 +260,11 @@ export const MainNavigator = () => {
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       {activeTab === 'Chats' ? (
         <ChatsScreen pushTarget={pushTarget} startAt={chatsStartAt} />
       ) : (
-      <ScrollView
+        <ScrollView
           className="flex-1"
           alwaysBounceVertical
           refreshControl={
@@ -272,118 +275,152 @@ export const MainNavigator = () => {
               />
             ) : undefined
           }
-          contentContainerStyle={{ 
-            paddingHorizontal: 16, 
+          contentContainerStyle={{
+            paddingHorizontal: 16,
             paddingTop: 60, // <--- Esta es la clave para esquivar la Dynamic Island/Notch
-            paddingBottom: 40 
+            paddingBottom: 40,
           }}
         >
-    <Text className="text-3xl font-bold text-gray-900 mb-6">{activeTab}</Text>
+          <Text className="mb-6 mt-3 title1">{activeTab}</Text>
 
-        {/* Pestaña: AVISOS */}
-        {activeTab === 'Avisos' && (
-          <View>
-            <TouchableOpacity
-              className="mb-5 self-start rounded-lg bg-blue-600 px-4 py-3"
-              onPress={openCreateForm}
-              accessibilityRole="button"
-            >
-              <Text className="font-bold text-white">Crear reporte</Text>
-            </TouchableOpacity>
+          {/* Pestaña: AVISOS */}
+          {activeTab === 'Avisos' && (
+            <View>
+              <TouchableOpacity
+                className="mb-5 self-start rounded-lg bg-blue-600 px-4 py-3"
+                onPress={openCreateForm}
+                accessibilityRole="button"
+              >
+                <Text className="font-bold text-white">Crear reporte</Text>
+              </TouchableOpacity>
 
-            {isLoadingReports && reports.length === 0 ? (
-              <ActivityIndicator className="my-8" size="large" color="#2563eb" />
-            ) : reportsError && reports.length === 0 ? (
-              <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-                <Text className="mb-3 text-red-700">{reportsError}</Text>
-                <TouchableOpacity onPress={() => void loadReports()} accessibilityRole="button">
-                  <Text className="font-bold text-blue-700">Reintentar</Text>
-                </TouchableOpacity>
-              </View>
-            ) : reports.length === 0 ? (
-              <Text className="py-8 text-center text-gray-500">
-                Todavía no hay reportes publicados.
-              </Text>
-            ) : (
-              <>
-                {reportsError && (
-                  <View className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
-                    <Text className="mb-3 text-red-700">{reportsError}</Text>
-                    <TouchableOpacity
-                      onPress={() => void loadReports(reportPageNumber, true)}
-                      disabled={isRefreshingReports}
-                      accessibilityRole="button"
-                    >
-                      <Text className="font-bold text-blue-700">
-                        {isRefreshingReports ? 'Actualizando...' : 'Reintentar'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {reports.map((report) => (
-                  <ReportCard
-                    key={String(report.id)}
-                    report={report}
-                    onEdit={openEditForm}
-                    onDelete={handleDeleteReport}
-                    onChangeStatus={setReportChangingStatus}
+              {isLoadingReports && reports.length === 0 ? (
+                <ActivityIndicator className="my-8" size="large" color="#2563eb" />
+              ) : reportsError && reports.length === 0 ? (
+                <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+                  <Text className="mb-3 text-red-700 dark:text-red-400">{reportsError}</Text>
+                  <TouchableOpacity onPress={() => void loadReports()} accessibilityRole="button">
+                    <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : reports.length === 0 ? (
+                <Text className="py-8 text-center text-gray-500 dark:text-gray-400">
+                  Todavía no hay reportes publicados.
+                </Text>
+              ) : (
+                <>
+                  {reportsError && (
+                    <View className="mb-4 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+                      <Text className="mb-3 text-red-700 dark:text-red-400">{reportsError}</Text>
+                      <TouchableOpacity
+                        onPress={() => void loadReports(reportPageNumber, true)}
+                        disabled={isRefreshingReports}
+                        accessibilityRole="button"
+                      >
+                        <Text className="font-bold text-blue-700 dark:text-blue-400">
+                          {isRefreshingReports ? 'Actualizando...' : 'Reintentar'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  {reports.map((report) => (
+                    <ReportCard
+                      key={String(report.id)}
+                      report={report}
+                      onEdit={openEditForm}
+                      onDelete={handleDeleteReport}
+                      onChangeStatus={setReportChangingStatus}
+                    />
+                  ))}
+                  <PaginationControls
+                    pageNumber={reportPageNumber}
+                    totalPages={reportTotalPages}
+                    onPageChange={(page) => void loadReports(page)}
+                    disabled={isLoadingReports || isRefreshingReports}
                   />
-                ))}
-                <PaginationControls
-                  pageNumber={reportPageNumber}
-                  totalPages={reportTotalPages}
-                  onPageChange={(page) => void loadReports(page)}
-                  disabled={isLoadingReports || isRefreshingReports}
-                />
-              </>
-            )}
-          </View>
-        )}
-
-        {/* Pestaña: OBJETOS */}
-        {activeTab === 'Objetos' && (
-          <ObjectsScreen
-            onOpenRequests={() => {
-              setChatsStartAt('requests');
-              setActiveTab('Chats');
-            }}
-            onRefreshReady={registerObjectsRefresh}
-          />
-        )}
-
-        {activeTab === 'Usuarios' && <UsersCrud />}
-
-        {/* Pestaña: PERFIL */}
-        {activeTab === 'Perfil' && (
-          <View className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm items-center">
-            {/* Avatar genérico */}
-            <View className="w-24 h-24 bg-blue-600 rounded-full items-center justify-center mb-4">
-              <Text className="text-white text-3xl font-bold">
-                {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
-              </Text>
+                </>
+              )}
             </View>
-            
-            {/* Información del usuario conectada al Context API */}
-            <Text className="text-xl font-bold text-gray-900 mb-1">{currentUser?.email}</Text>
-            <Text className="text-blue-600 font-semibold mb-8">Rol de cuenta: {currentUser?.role}</Text>
+          )}
 
-            <TouchableOpacity 
-              className="bg-red-50 border border-red-200 py-3 px-8 rounded-lg w-full items-center"
-              onPress={handleLogout}
-              accessibilityRole="button"
-            >
-              <Text className="text-red-600 font-bold text-base">Cerrar Sesión</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        
-        {/* Espaciado al final para que el último elemento no quede detrás de la barra inferior */}
-        <View className="h-10" />
-      </ScrollView>
+          {/* Pestaña: OBJETOS */}
+          {activeTab === 'Objetos' && (
+            <ObjectsScreen
+              onOpenRequests={() => {
+                setChatsStartAt('requests');
+                setActiveTab('Chats');
+              }}
+              onRefreshReady={registerObjectsRefresh}
+            />
+          )}
+
+          {activeTab === 'Usuarios' && <UsersCrud />}
+
+          {/* Pestaña: PERFIL */}
+          {activeTab === 'Perfil' && (
+            <View className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm items-center">
+              {/* Avatar genérico */}
+              <View className="w-24 h-24 bg-blue-600 rounded-full items-center justify-center mb-4 mt-2">
+                <Text className="text-white text-3xl font-bold">
+                  {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
+                </Text>
+              </View>
+
+              {/* Información del usuario conectada al Context API */}
+              <Text className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                {currentUser?.email}
+              </Text>
+              <Text className="text-blue-600 dark:text-blue-400 font-semibold mb-6">
+                Rol de cuenta: {currentUser?.role}
+              </Text>
+
+              {/* Botón de Modo Oscuro */}
+              <TouchableOpacity
+                className="flex-row items-center justify-between bg-gray-200 dark:bg-black rounded-full px-2 py-2 w-40 mb-8 border border-gray-300 dark:border-gray-800"
+                onPress={toggleColorScheme}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+              >
+                {colorScheme === 'dark' ? (
+                  <>
+                    <View className="bg-white rounded-full p-2">
+                      <Feather name="moon" size={20} color="black" />
+                    </View>
+                    <Text className="text-white font-bold text-sm flex-1 text-center pr-2">
+                      NIGHT MODE
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text className="text-black font-bold text-sm flex-1 text-center pl-2">
+                      DAY MODE
+                    </Text>
+                    <View className="bg-white rounded-full p-2 shadow-sm border border-gray-300">
+                      <Feather name="sun" size={20} color="black" />
+                    </View>
+                  </>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 py-3 px-8 rounded-lg w-full items-center"
+                onPress={handleLogout}
+                accessibilityRole="button"
+              >
+                <Text className="text-red-600 dark:text-red-400 font-bold text-base">
+                  Cerrar Sesión
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Espaciado al final para que el último elemento no quede detrás de la barra inferior */}
+          <View className="h-10" />
+        </ScrollView>
       )}
 
       {/* Barra de navegación inferior */}
-      <View className="flex-row bg-white border-t border-gray-200 pb-5 pt-3">
+      <View className="flex-row bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-600 pb-5 pt-3">
         {tabs.map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -399,8 +436,18 @@ export const MainNavigator = () => {
             }}
             accessibilityRole="button"
           >
-            <View className={`w-6 h-6 mb-1 rounded-full ${activeTab === tab ? 'bg-blue-600' : 'bg-gray-300'}`} />
-            <Text className={`text-xs ${activeTab === tab ? 'text-blue-600 font-bold' : 'text-gray-500'}`}>
+            <View
+              className={`w-6 h-6 mb-1 rounded-full ${
+                activeTab === tab ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+              }`}
+            />
+            <Text
+              className={`text-xs ${
+                activeTab === tab
+                  ? 'text-blue-600 dark:text-blue-400 font-bold'
+                  : 'text-gray-500 dark:text-gray-400'
+              }`}
+            >
               {tab}
             </Text>
           </TouchableOpacity>

@@ -28,7 +28,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
       />
       {pages.map((page, index) =>
         page === null ? (
-          <Text key={`ellipsis-${index}`} className="px-1 text-gray-500">
+          <Text key={`ellipsis-${index}`} className="px-1 text-gray-500 dark:text-gray-400">
             …
           </Text>
         ) : (
@@ -87,7 +87,9 @@ const PageButton: React.FC<PageButtonProps> = ({
 }) => (
   <TouchableOpacity
     className={`min-w-10 items-center rounded-lg border px-3 py-2 ${
-      selected ? 'border-blue-600 bg-blue-600' : 'border-blue-200 bg-white'
+      selected
+        ? 'border-blue-600 bg-blue-600'
+        : 'border-blue-200 dark:border-gray-700 bg-white dark:bg-gray-800'
     } ${disabled && !selected ? 'opacity-50' : ''}`}
     onPress={onPress}
     disabled={disabled}
@@ -95,7 +97,11 @@ const PageButton: React.FC<PageButtonProps> = ({
     accessibilityLabel={accessibilityLabel}
     accessibilityState={{ selected, disabled }}
   >
-    <Text className={`font-semibold ${selected ? 'text-white' : 'text-blue-700'}`}>
+    <Text
+      className={`font-semibold ${
+        selected ? 'text-white' : 'text-blue-700 dark:text-blue-400'
+      }`}
+    >
       {label}
     </Text>
   </TouchableOpacity>

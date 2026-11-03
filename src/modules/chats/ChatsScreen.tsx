@@ -148,7 +148,7 @@ export const ChatsScreen: React.FC<{
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       {page.name === 'home' && (
         <ConversationList
           onOpen={goToConversation}
@@ -231,7 +231,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [newMatchesCount, setNewMatchesCount] = useState(0);
-  const [matchesCountError, setMatchesCountError] = useState<string | null>(null);
+  const [matchesCountError, setMatchesCountError] = useState(stringOrNull(null));
   const [pageNumber, setPageNumber] = useState(1);
 
   const loadMatchesCount = useCallback(async () => {
@@ -287,7 +287,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   return (
     <View className="flex-1 px-4 pt-4">
-      <Text className="mb-4 mt-8 text-3xl font-bold text-blue-900">Chats</Text>
+      <Text className="mb-4 mt-8 title1">Chats</Text>
       <View className="mb-4 flex-row flex-wrap gap-2">
         <ActionChip
           label={`Matches${newMatchesCount > 0 ? ` (${newMatchesCount})` : ''}`}
@@ -297,12 +297,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
         <ActionChip label={`Notificaciones${unreadCount ? ` (${unreadCount})` : ''}`} onPress={onNotifications} />
       </View>
       {matchesCountError && (
-        <View className="mb-3 flex-row items-center justify-between rounded-lg bg-amber-50 px-3 py-2">
-          <Text className="mr-2 flex-1 text-xs text-amber-800">
+        <View className="mb-3 flex-row items-center justify-between rounded-lg bg-amber-50 dark:bg-amber-900/30 px-3 py-2">
+          <Text className="mr-2 flex-1 text-xs text-amber-800 dark:text-amber-300">
             No se pudo actualizar el indicador de matches. {matchesCountError}
           </Text>
           <TouchableOpacity onPress={() => void loadMatchesCount()} accessibilityRole="button">
-            <Text className="text-xs font-bold text-blue-700">Reintentar</Text>
+            <Text className="text-xs font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -335,34 +335,34 @@ const ConversationList: React.FC<ConversationListProps> = ({
             const roleLabel = isRequester ? 'Quien lo busca' : 'Quien lo encontró';
             return (
               <TouchableOpacity
-                className="mb-3 flex-row items-center rounded-xl border border-gray-200 bg-white p-4"
+                className="mb-3 flex-row items-center rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
                 onPress={() => onOpen(item)}
                 accessibilityRole="button"
               >
                 {item.foundItem.photoUrl ? (
                   <Image
                     source={{ uri: item.foundItem.photoUrl }}
-                    className="mr-3 h-14 w-14 rounded-lg bg-gray-100"
+                    className="mr-3 h-14 w-14 rounded-lg bg-gray-100 dark:bg-gray-700"
                     resizeMode="cover"
                   />
                 ) : (
-                  <View className="mr-3 h-14 w-14 items-center justify-center rounded-lg bg-blue-50">
-                    <Text className="text-xl text-blue-600">?</Text>
+                  <View className="mr-3 h-14 w-14 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/40">
+                    <Text className="text-xl text-blue-600 dark:text-blue-400">?</Text>
                   </View>
                 )}
                 <View className="flex-1">
-                  <Text className="font-bold text-gray-900" numberOfLines={1}>
+                  <Text className="font-bold text-gray-900 dark:text-white" numberOfLines={1}>
                     {item.foundItem.article}
                   </Text>
-                  <Text className="mt-1 text-sm text-gray-500">
+                  <Text className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     {roleLabel} · {formatDate(item.createdAt)}
                   </Text>
-                  <Text className="mt-1 text-xs font-semibold text-blue-700">
+                  <Text className="mt-1 text-xs font-semibold text-blue-700 dark:text-blue-400">
                     {item.matchId !== null ? 'Por coincidencia' : 'Por solicitud'}
                   </Text>
                 </View>
                 {item.closedAt && (
-                  <Text className="ml-2 rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
+                  <Text className="ml-2 rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-1 text-xs text-gray-600 dark:text-gray-300">
                     Cerrada
                   </Text>
                 )}
@@ -603,22 +603,22 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
       <View className="flex-1 px-4 pt-16">
         <View className="mb-3 flex-row items-center">
           <TouchableOpacity onPress={onBack} className="mr-3 py-2" accessibilityRole="button">
-            <Text className="font-semibold text-blue-600">‹ Chats</Text>
+            <Text className="font-semibold text-blue-600 dark:text-blue-400">‹ Chats</Text>
           </TouchableOpacity>
           {conversation.foundItem.photoUrl && (
             <Image source={{ uri: conversation.foundItem.photoUrl }} className="mr-3 h-10 w-10 rounded-lg" />
           )}
           <View className="flex-1">
-            <Text className="text-lg font-bold text-blue-900" numberOfLines={1}>
+            <Text className="text-lg font-bold text-blue-900 dark:text-white" numberOfLines={1}>
               {conversation.foundItem.article}
             </Text>
             <View>
-              <Text className="text-xs text-gray-500">
+              <Text className="text-xs text-gray-500 dark:text-gray-400">
                 {readOnly
                   ? `${conversation.requesterConfirmedReturn ? 'Quien lo busca ya confirmó' : 'Quien lo busca aún no confirma'} · ${conversation.finderConfirmedReturn ? 'Quien lo encontró ya confirmó' : 'Quien lo encontró aún no confirma'}`
                   : `${myConfirmed ? 'Tú ya confirmaste' : 'Tú aún no confirmas'} · ${otherConfirmed ? 'La otra persona ya confirmó' : 'La otra persona aún no confirma'}`}
               </Text>
-              <Text className="text-xs text-gray-500">
+              <Text className="text-xs text-gray-500 dark:text-gray-400">
                 Origen: {conversation.matchId !== null ? 'Por coincidencia' : 'Por solicitud'}
               </Text>
               {conversation.matchId !== null && relatedMatch && (
@@ -628,7 +628,7 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
                   }}
                   accessibilityRole="button"
                 >
-                  <Text className="text-xs font-semibold text-blue-700">
+                  <Text className="text-xs font-semibold text-blue-700 dark:text-blue-400">
                     Coincidencia {Math.round(relatedMatch.matchPercentage)}% · Ver match
                   </Text>
                 </TouchableOpacity>
@@ -637,20 +637,22 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
           </View>
           {!readOnly && !closed && (
             <TouchableOpacity
-              className="ml-2 rounded-lg border border-blue-200 px-3 py-2"
+              className="ml-2 rounded-lg border border-blue-200 dark:border-blue-800 px-3 py-2"
               onPress={confirmReturn}
               disabled={confirming || myConfirmed}
               accessibilityRole="button"
             >
-              <Text className="text-xs font-semibold text-blue-700">
+              <Text className="text-xs font-semibold text-blue-700 dark:text-blue-400">
                 {confirming ? '...' : 'Confirmar'}
               </Text>
             </TouchableOpacity>
           )}
         </View>
         {closed && (
-          <View className="mb-3 rounded-lg bg-green-100 p-3">
-            <Text className="text-center font-bold text-green-800">Objeto devuelto</Text>
+          <View className="mb-3 rounded-lg bg-green-100 dark:bg-green-900/40 p-3">
+            <Text className="text-center font-bold text-green-800 dark:text-green-300">
+              Objeto devuelto
+            </Text>
           </View>
         )}
         {loading ? (
@@ -660,10 +662,10 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
         ) : (
           <View className="flex-1">
             {error && (
-              <View className="mb-2 rounded-lg border border-red-200 bg-red-50 p-3">
-                <Text className="mb-2 text-red-700">{error}</Text>
+              <View className="mb-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-3">
+                <Text className="mb-2 text-red-700 dark:text-red-400">{error}</Text>
                 <TouchableOpacity onPress={() => void loadLatest()} accessibilityRole="button">
-                  <Text className="font-bold text-blue-700">Reintentar</Text>
+                  <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -688,10 +690,16 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
               renderItem={({ item }) => {
                 const mine = item.senderId === userId;
                 return (
-                  <View className={`mb-2 max-w-[82%] rounded-2xl p-3 ${
-                    mine ? 'self-end bg-blue-600' : 'self-start border border-gray-200 bg-white'
-                  }`}>
-                    <Text className={mine ? 'text-white' : 'text-gray-900'}>{item.content}</Text>
+                  <View
+                    className={`mb-2 max-w-[82%] rounded-2xl p-3 ${
+                      mine
+                        ? 'self-end bg-blue-600'
+                        : 'self-start border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                    }`}
+                  >
+                    <Text className={mine ? 'text-white' : 'text-gray-900 dark:text-white'}>
+                      {item.content}
+                    </Text>
                     <View className="mt-1 flex-row items-center justify-end gap-2">
                       <Text className={`text-xs ${mine ? 'text-blue-100' : 'text-gray-400'}`}>
                         {formatTime(item.createdAt)}
@@ -715,16 +723,21 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
           </View>
         )}
         {readOnly ? (
-          <Text className="py-3 text-center text-gray-500">Modo de solo lectura</Text>
+          <Text className="py-3 text-center text-gray-500 dark:text-gray-400">
+            Modo de solo lectura
+          </Text>
         ) : closed ? (
-          <Text className="py-3 text-center text-gray-500">Esta conversación está cerrada</Text>
+          <Text className="py-3 text-center text-gray-500 dark:text-gray-400">
+            Esta conversación está cerrada
+          </Text>
         ) : (
-          <View className="flex-row items-end gap-2 border-t border-gray-200 bg-gray-50 py-3">
+          <View className="flex-row items-end gap-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 py-3">
             <TextInput
-              className="max-h-28 flex-1 rounded-lg border border-gray-300 bg-white p-3 text-base"
+              className="max-h-28 flex-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 text-base text-gray-900 dark:text-white"
               value={text}
               onChangeText={setText}
               placeholder="Escribe un mensaje"
+              placeholderTextColor="#9CA3AF"
               multiline
               maxLength={2000}
             />
@@ -814,7 +827,7 @@ const ContactRequestsList: React.FC<ContactRequestsListProps> = ({
   return (
     <View className="flex-1 px-4 pt-4 mt-10">
       <PageHeader title="Solicitudes de contacto" onBack={onBack} />
-      <View className="mb-3 flex-row rounded-lg bg-blue-100 p-1">
+      <View className="mb-3 flex-row rounded-lg bg-blue-100 dark:bg-gray-800 p-1">
         <TabButton label="Recibidas" selected={activeTab === 'received'} onPress={() => {
           setActiveTab('received');
           setPageNumber(1);
@@ -857,13 +870,15 @@ const ContactRequestsList: React.FC<ContactRequestsListProps> = ({
           renderItem={({ item }) => {
             const pending = item.status === 'Pendiente';
             return (
-              <View className="mb-3 rounded-xl border border-gray-200 bg-white p-4">
-                <Text className="font-bold text-gray-900">{item.foundItem.article}</Text>
-                <Text className="my-1 text-sm text-gray-500">
+              <View className="mb-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                <Text className="font-bold text-gray-900 dark:text-white">
+                  {item.foundItem.article}
+                </Text>
+                <Text className="my-1 text-sm text-gray-500 dark:text-gray-400">
                   {activeTab === 'received' ? `Solicitante #${item.requesterId}` : 'Tu solicitud'}
                   {' · '}{formatDate(item.createdAt)}
                 </Text>
-                <Text className="mb-3 text-sm text-gray-600">{item.status}</Text>
+                <Text className="mb-3 text-sm text-gray-600 dark:text-gray-300">{item.status}</Text>
                 {!readOnly && pending && (
                   <View className="flex-row gap-3">
                     {activeTab === 'received' ? (
@@ -950,7 +965,9 @@ const NotificationsList: React.FC<NotificationsListProps> = ({ onBack, onOpen })
     <View className="flex-1 px-4 pt-4 mt-10">
       <PageHeader title="Notificaciones" onBack={onBack} />
       <TouchableOpacity className="mb-3 self-end" onPress={() => void markAllRead()}>
-        <Text className="font-semibold text-blue-600">Marcar todas como leídas</Text>
+        <Text className="font-semibold text-blue-600 dark:text-blue-400">
+          Marcar todas como leídas
+        </Text>
       </TouchableOpacity>
       {loading ? (
         <ActivityIndicator className="my-8" size="large" color="#2563eb" />
@@ -981,15 +998,17 @@ const NotificationsList: React.FC<NotificationsListProps> = ({ onBack, onOpen })
           ListEmptyComponent={error ? null : <StateMessage message="No tienes notificaciones." />}
           renderItem={({ item }) => (
             <TouchableOpacity
-              className={`mb-3 rounded-xl border border-gray-200 p-4 ${
-                item.isRead ? 'bg-white' : 'bg-blue-50'
+              className={`mb-3 rounded-xl border border-gray-200 dark:border-gray-700 p-4 ${
+                item.isRead ? 'bg-white dark:bg-gray-800' : 'bg-blue-50 dark:bg-blue-900/30'
               }`}
               onPress={() => onOpen(item)}
               accessibilityRole="button"
             >
-              <Text className="font-bold text-gray-900">{item.title}</Text>
-              <Text className="my-1 text-gray-600">{item.message}</Text>
-              <Text className="text-xs text-gray-500">{formatDate(item.createdAt)}</Text>
+              <Text className="font-bold text-gray-900 dark:text-white">{item.title}</Text>
+              <Text className="my-1 text-gray-600 dark:text-gray-300">{item.message}</Text>
+              <Text className="text-xs text-gray-500 dark:text-gray-400">
+                {formatDate(item.createdAt)}
+              </Text>
             </TouchableOpacity>
           )}
         />
@@ -1001,15 +1020,18 @@ const NotificationsList: React.FC<NotificationsListProps> = ({ onBack, onOpen })
 const PageHeader: React.FC<{ title: string; onBack: () => void }> = ({ title, onBack }) => (
   <View className="mb-4 flex-row items-center">
     <TouchableOpacity className="mr-3 py-2" onPress={onBack} accessibilityRole="button">
-      <Text className="font-semibold text-blue-600">‹ Atrás</Text>
+      <Text className="font-semibold text-blue-600 dark:text-blue-400">‹ Atrás</Text>
     </TouchableOpacity>
-    <Text className="flex-1 text-2xl font-bold text-blue-900">{title}</Text>
+    <Text className="flex-1 text-2xl font-bold text-blue-900 dark:text-white">{title}</Text>
   </View>
 );
 
 const ActionChip: React.FC<{ label: string; onPress: () => void }> = ({ label, onPress }) => (
-  <TouchableOpacity className="rounded-full border border-blue-200 bg-white px-3 py-2" onPress={onPress}>
-    <Text className="font-semibold text-blue-700">{label}</Text>
+  <TouchableOpacity
+    className="rounded-full border border-blue-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2"
+    onPress={onPress}
+  >
+    <Text className="font-semibold text-blue-700 dark:text-blue-400">{label}</Text>
   </TouchableOpacity>
 );
 
@@ -1024,7 +1046,9 @@ const TabButton: React.FC<{
     accessibilityRole="button"
     accessibilityState={{ selected }}
   >
-    <Text className={`font-semibold ${selected ? 'text-white' : 'text-blue-700'}`}>{label}</Text>
+    <Text className={`font-semibold ${selected ? 'text-white' : 'text-blue-700 dark:text-blue-400'}`}>
+      {label}
+    </Text>
   </TouchableOpacity>
 );
 
@@ -1049,27 +1073,31 @@ const SecondaryAction: React.FC<{
   disabled?: boolean;
 }> = ({ label, onPress, disabled = false }) => (
   <TouchableOpacity
-    className={`flex-1 items-center rounded-lg border border-blue-200 px-4 py-3 ${disabled ? 'opacity-50' : ''}`}
+    className={`flex-1 items-center rounded-lg border border-blue-200 dark:border-gray-700 px-4 py-3 ${disabled ? 'opacity-50' : ''}`}
     onPress={onPress}
     disabled={disabled}
     accessibilityRole="button"
   >
-    <Text className="font-semibold text-blue-700">{label}</Text>
+    <Text className="font-semibold text-blue-700 dark:text-blue-400">{label}</Text>
   </TouchableOpacity>
 );
 
 const RetryMessage: React.FC<{ message: string; onRetry: () => void }> = ({ message, onRetry }) => (
-  <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-    <Text className="mb-3 text-red-700">{message}</Text>
+  <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+    <Text className="mb-3 text-red-700 dark:text-red-400">{message}</Text>
     <TouchableOpacity onPress={onRetry} accessibilityRole="button">
-      <Text className="font-bold text-blue-700">Reintentar</Text>
+      <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
     </TouchableOpacity>
   </View>
 );
 
 const StateMessage: React.FC<{ message: string }> = ({ message }) => (
-  <Text className="py-8 text-center text-gray-500">{message}</Text>
+  <Text className="py-8 text-center text-gray-500 dark:text-gray-400">{message}</Text>
 );
+
+function stringOrNull(value: string | null): string | null {
+  return value;
+}
 
 function numericUserId(id: string | undefined): number | null {
   if (id === undefined) return null;

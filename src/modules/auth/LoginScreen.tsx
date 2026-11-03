@@ -11,6 +11,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { useAuth } from '../../AuthContext';
 import { authApi } from '../../api/auth/authApi';
 import { ApiError } from '../../api/auth/client';
@@ -24,6 +25,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNavigateToRegister }
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  useColorScheme();
 
   const handleLogin = async () => {
     // Aquí no se valida el dominio institucional a propósito: la cuenta de
@@ -57,84 +59,89 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNavigateToRegister }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-gray-50"
+      className="flex-1 bg-gray-50 dark:bg-gray-900"
     >
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: 'center',
+          alignItems: 'center',
           paddingHorizontal: 24,
           paddingVertical: 24,
         }}
       >
-        <Text className="text-3xl font-bold text-blue-900 mb-2 text-center">
-          Avisos TEC
-        </Text>
-        <Text className="text-base text-gray-500 mb-8 text-center">
-          Inicia sesión con tu correo institucional
-        </Text>
-
-        <View className="mb-4">
-          <Text className="text-sm font-semibold text-gray-700 mb-1">
-            Correo Electrónico
+        <View className="w-full max-w-md">
+          <Text className="title1">
+            Avisos TEC
           </Text>
-          <TextInput
-            className="bg-white border border-gray-300 rounded-lg p-4 text-base"
-            placeholder="ejemplo@tectijuana.edu.mx"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="email"
-            textContentType="emailAddress"
-            maxLength={100}
-            value={email}
-            onChangeText={setEmail}
-            accessibilityLabel="Entrada de correo electrónico"
-          />
+          <Text className="title2">
+            Inicia sesión con tu correo institucional
+          </Text>
+
+          <View className="mb-4">
+            <Text className="title3">
+              Correo Electrónico
+            </Text>
+            <TextInput
+              className="bg-white border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg p-4 text-base text-gray-900 dark:text-white"
+              placeholder="ejemplo@tectijuana.edu.mx"
+              placeholderTextColor="#9CA3AF"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              textContentType="emailAddress"
+              maxLength={100}
+              value={email}
+              onChangeText={setEmail}
+              accessibilityLabel="Entrada de correo electrónico"
+            />
+          </View>
+
+          <View className="mb-6">
+            <Text className="title3">
+              Contraseña
+            </Text>
+            <TextInput
+              className="bg-white border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg p-4 text-base text-gray-900 dark:text-white"
+              placeholder="********"
+              placeholderTextColor="#9CA3AF"
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="password"
+              textContentType="password"
+              value={password}
+              onChangeText={setPassword}
+              accessibilityLabel="Entrada de contraseña"
+            />
+          </View>
+
+          <TouchableOpacity
+            className={`rounded-lg p-4 flex-row justify-center items-center mb-4 ${
+              isLoading ? 'bg-blue-400' : 'bg-blue-600'
+            }`}
+            onPress={handleLogin}
+            disabled={isLoading}
+            accessibilityRole="button"
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-white font-bold text-lg">Ingresar</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={onNavigateToRegister}
+            className="py-2"
+            accessibilityRole="button"
+          >
+            <Text className="title4">
+              ¿No tienes cuenta? Regístrate aquí
+            </Text>
+          </TouchableOpacity>
         </View>
-
-        <View className="mb-6">
-          <Text className="text-sm font-semibold text-gray-700 mb-1">
-            Contraseña
-          </Text>
-          <TextInput
-            className="bg-white border border-gray-300 rounded-lg p-4 text-base"
-            placeholder="********"
-            secureTextEntry
-            autoCapitalize="none"
-            autoComplete="password"
-            textContentType="password"
-            value={password}
-            onChangeText={setPassword}
-            accessibilityLabel="Entrada de contraseña"
-          />
-        </View>
-
-        <TouchableOpacity
-          className={`rounded-lg p-4 flex-row justify-center items-center mb-4 ${
-            isLoading ? 'bg-blue-400' : 'bg-blue-600'
-          }`}
-          onPress={handleLogin}
-          disabled={isLoading}
-          accessibilityRole="button"
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text className="text-white font-bold text-lg">Ingresar</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onNavigateToRegister}
-          className="py-2"
-          accessibilityRole="button"
-        >
-          <Text className="text-center text-blue-600 font-semibold">
-            ¿No tienes cuenta? Regístrate aquí
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
