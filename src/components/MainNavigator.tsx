@@ -20,6 +20,7 @@ import { ChatsScreen } from '../modules/chats/ChatsScreen';
 import type { PushNotificationTarget } from '../modules/chats/ChatsScreen';
 import { getPushTarget, registerPushDevice } from '../modules/chats/pushNotifications';
 import { PaginationControls } from './PaginationControls';
+import { UsersCrud } from '../modules/monitoring/UsersCrud';
 
 export const MainNavigator = () => {
   const [activeTab, setActiveTab] = useState('Avisos');
@@ -37,7 +38,15 @@ export const MainNavigator = () => {
   const [chatsStartAt, setChatsStartAt] = useState<'home' | 'requests'>('home');
   const objectsRefreshRef = useRef<(() => Promise<void>) | null>(null);
 
-  const tabs = ['Avisos', 'Objetos', 'Chats', 'Perfil'];
+  const tabs = [
+    'Avisos',
+    'Objetos',
+    'Chats',
+    ...(currentUser?.role === 'ADMIN' || currentUser?.role === 'MODERATOR'
+      ? ['Usuarios']
+      : []),
+    'Perfil',
+  ];
 
   const loadReports = useCallback(async (
     pageNumber = 1,
@@ -341,6 +350,8 @@ export const MainNavigator = () => {
             onRefreshReady={registerObjectsRefresh}
           />
         )}
+
+        {activeTab === 'Usuarios' && <UsersCrud />}
 
         {/* Pestaña: PERFIL */}
         {activeTab === 'Perfil' && (
