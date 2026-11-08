@@ -154,30 +154,32 @@ export const ObjectItemDetailsScreen: React.FC<ObjectItemDetailsScreenProps> = (
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <View className="flex-row items-center px-4 pt-4">
         <TouchableOpacity onPress={onBack} className="mr-3 py-2" accessibilityRole="button">
-          <Text className="font-semibold text-blue-600">‹ Atrás</Text>
+          <Text className="font-semibold text-blue-600 dark:text-blue-400">‹ Atrás</Text>
         </TouchableOpacity>
-        <Text className="text-2xl font-bold text-blue-900">
+        <Text className="text-2xl font-bold text-blue-900 dark:text-white">
           {found ? 'Objeto encontrado' : 'Objeto perdido'}
         </Text>
       </View>
       {!accessToken ? (
-        <Text className="m-4 text-center text-gray-500">Inicia sesión para consultar los detalles.</Text>
+        <Text className="m-4 text-center text-gray-500 dark:text-gray-400">
+          Inicia sesión para consultar los detalles.
+        </Text>
       ) : (
         <View className="px-4 pb-8 pt-4">
-          <View className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <View className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             {item.photoUrl && (
-              <Image source={{ uri: item.photoUrl }} className="h-56 w-full bg-gray-100" resizeMode="cover" />
+              <Image source={{ uri: item.photoUrl }} className="h-56 w-full bg-gray-100 dark:bg-gray-700" resizeMode="cover" />
             )}
             <View className="p-4">
-              <Text className="text-xl font-bold text-gray-900">{item.article}</Text>
-              <Text className="mt-1 font-semibold text-blue-600">{item.category}</Text>
-              <Text className="mt-3 text-gray-600">Color: {item.color}</Text>
-              <Text className="mt-1 text-gray-600">Lugar: {item.location}</Text>
-              <Text className="mt-2 text-gray-600">{item.description}</Text>
-              <Text className="mt-3 text-sm text-gray-500">Estado: {item.status}</Text>
+              <Text className="text-xl font-bold text-gray-900 dark:text-white">{item.article}</Text>
+              <Text className="mt-1 font-semibold text-blue-600 dark:text-blue-400">{item.category}</Text>
+              <Text className="mt-3 text-gray-600 dark:text-gray-300">Color: {item.color}</Text>
+              <Text className="mt-1 text-gray-600 dark:text-gray-300">Lugar: {item.location}</Text>
+              <Text className="mt-2 text-gray-600 dark:text-gray-200">{item.description}</Text>
+              <Text className="mt-3 text-sm text-gray-500 dark:text-gray-400">Estado: {item.status}</Text>
             </View>
           </View>
 
@@ -197,12 +199,12 @@ export const ObjectItemDetailsScreen: React.FC<ObjectItemDetailsScreenProps> = (
           )}
 
           {found && requestsError && (
-            <View className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3">
-              <Text className="mb-2 text-sm text-red-700">
+            <View className="mt-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-3">
+              <Text className="mb-2 text-sm text-red-700 dark:text-red-400">
                 No se pudieron cargar las solicitudes: {requestsError}
               </Text>
               <TouchableOpacity onPress={() => void loadRequests()} accessibilityRole="button">
-                <Text className="font-bold text-blue-700">Reintentar</Text>
+                <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -221,15 +223,17 @@ export const ObjectItemDetailsScreen: React.FC<ObjectItemDetailsScreenProps> = (
           )}
 
           {found && pendingRequest && (
-            <View className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
-              <Text className="mb-3 text-center font-semibold text-blue-800">Solicitud enviada</Text>
+            <View className="mt-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30 p-4">
+              <Text className="mb-3 text-center font-semibold text-blue-800 dark:text-blue-300">
+                Solicitud enviada
+              </Text>
               <TouchableOpacity
-                className="items-center rounded-lg border border-blue-200 bg-white py-3"
+                className="items-center rounded-lg border border-blue-200 dark:border-blue-700 bg-white dark:bg-gray-800 py-3"
                 onPress={() => void cancelRequest()}
                 disabled={acting}
                 accessibilityRole="button"
               >
-                <Text className="font-semibold text-blue-700">
+                <Text className="font-semibold text-blue-700 dark:text-blue-400">
                   {acting ? 'Cancelando…' : 'Cancelar solicitud'}
                 </Text>
               </TouchableOpacity>
@@ -237,40 +241,47 @@ export const ObjectItemDetailsScreen: React.FC<ObjectItemDetailsScreenProps> = (
           )}
 
           {found && !owner && !active && (
-            <Text className="mt-4 text-center text-gray-500">
+            <Text className="mt-4 text-center text-gray-500 dark:text-gray-400">
               Este objeto ya no está activo y no puede recibir solicitudes.
             </Text>
           )}
           {found && owner && receivedRequests.length === 0 && (
-            <Text className="mt-3 text-center text-gray-500">
+            <Text className="mt-3 text-center text-gray-500 dark:text-gray-400">
               No hay solicitudes de contacto pendientes para este objeto.
             </Text>
           )}
 
-          <Text className="mb-3 mt-6 text-lg font-bold text-blue-900">Posibles coincidencias</Text>
+          <Text className="mb-3 mt-6 text-lg font-bold text-blue-900 dark:text-white">
+            Posibles coincidencias
+          </Text>
           {loadingMatches ? (
             <ActivityIndicator className="my-4" color="#2563eb" />
           ) : matchesError ? (
-            <View className="rounded-lg border border-red-200 bg-red-50 p-3">
-              <Text className="mb-2 text-sm text-red-700">
+            <View className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-3">
+              <Text className="mb-2 text-sm text-red-700 dark:text-red-400">
                 No se pudieron cargar los matches: {matchesError}
               </Text>
               <TouchableOpacity onPress={() => void loadMatches()} accessibilityRole="button">
-                <Text className="font-bold text-blue-700">Reintentar</Text>
+                <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
               </TouchableOpacity>
             </View>
           ) : matches.length === 0 ? (
-            <Text className="text-center text-gray-500">No hay matches asociados a este objeto.</Text>
+            <Text className="text-center text-gray-500 dark:text-gray-400">
+              No hay matches asociados a este objeto.
+            </Text>
           ) : (
             <>
               {matches
                 .slice((matchPageNumber - 1) * 20, matchPageNumber * 20)
                 .map((match) => (
-                  <View key={match.id} className="mb-3 rounded-xl border border-gray-200 bg-white p-4">
-                    <Text className="font-semibold text-gray-900">
+                  <View
+                    key={match.id}
+                    className="mb-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
+                  >
+                    <Text className="font-semibold text-gray-900 dark:text-white">
                       {kind === 'lost' ? match.foundItem.article : match.lostItem.article}
                     </Text>
-                    <Text className="mt-1 text-sm text-gray-500">
+                    <Text className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                       Posible coincidencia del {Math.round(match.matchPercentage)}% · {match.status}
                     </Text>
                   </View>

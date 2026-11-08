@@ -15,14 +15,16 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
   token?: string | null;
+  timeoutMs?: number;
 }
 
 export async function request<T>(
   path: string,
-  { method = 'GET', body, token }: RequestOptions = {}
+  { method = 'GET', body, token, timeoutMs }: RequestOptions = {}
 ): Promise<T> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const requestTimeoutMs = timeoutMs ?? REQUEST_TIMEOUT_MS;
+  const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
 
   let response: Response;
   const isMultipart = typeof FormData !== 'undefined' && body instanceof FormData;
@@ -43,10 +45,16 @@ export async function request<T>(
             : JSON.stringify(body),
       signal: controller.signal,
     });
-  } catch {
-    // Sin red, servidor apagado, timeout o URL base incorrecta.
+  } catch (error) {
+    if (controller.signal.aborted || isAbortError(error)) {
+      throw new ApiError(
+        'La solicitud tardó demasiado. Revisa tu conexión e inténtalo de nuevo.',
+        0
+      );
+    }
+
     throw new ApiError(
-      'No se pudo conectar al servidor. Revisa tu conexión e inténtalo de nuevo.',
+      `No se pudo enviar la solicitud al servidor. ${describeFetchError(error)} Verifica que el iPhone esté en la misma red Wi-Fi que la computadora, que la API esté disponible en el puerto 8080 y que el firewall permita la conexión.`,
       0
     );
   } finally {
@@ -69,6 +77,29 @@ export async function request<T>(
   }
 
   return data as T;
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === 'AbortError';
+}
+
+function describeFetchError(error: unknown): string {
+  if (!(error instanceof Error) || !error.message.trim()) {
+    return 'Error de conexión del dispositivo.';
+  }
+
+  const safeMessage = error.message
+    .replace(/https?:\/\/[^\s"'<>]+/gi, '[URL]')
+    .replace(/\bBearer\s+[^\s"'<>]+/gi, 'Bearer [oculto]')
+    .replace(
+      /\b(token|authorization|password|secret)\b\s*[:=]\s*[^\s,;]+/gi,
+      '$1=[oculto]'
+    )
+    .replace(/[\r\n]+/g, ' ')
+    .trim()
+    .slice(0, 120);
+
+  return `Detalle técnico: ${safeMessage}.`;
 }
 
 function extractErrorMessage(data: any, status: number): string {

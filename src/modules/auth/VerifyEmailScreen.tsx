@@ -104,7 +104,7 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-gray-50"
+      className="flex-1 bg-gray-50 dark:bg-gray-900"
     >
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -115,27 +115,28 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
           paddingVertical: 24,
         }}
       >
-        <Text className="text-3xl font-bold text-blue-900 mb-2 text-center">
+        <Text className="title1">
           Verifica tu correo
         </Text>
-        <Text className="text-base text-gray-500 text-center">
+        <Text className="text-base text-gray-500 dark:text-gray-400 text-center">
           Enviamos un código de {CODE_LENGTH} dígitos a
         </Text>
-        <Text className="text-base font-semibold text-gray-700 text-center">
+        <Text className="text-base font-semibold text-gray-700 dark:text-gray-200 text-center">
           {email}
         </Text>
-        <Text className="text-sm text-gray-500 mb-8 text-center">
+        <Text className="text-sm text-gray-500 dark:text-gray-400 mb-8 text-center">
           El código vence en 5 minutos.
         </Text>
 
         <View className="mb-8">
-          <Text className="text-sm font-semibold text-gray-700 mb-1">
+          <Text className="title3">
             Código de verificación
           </Text>
           <TextInput
-            className="bg-white border border-gray-300 rounded-lg p-4 text-2xl text-center"
+            className="bg-white border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg p-4 text-2xl text-center text-gray-900 dark:text-white"
             style={{ letterSpacing: 8 }}
             placeholder="000000"
+            placeholderTextColor="#9CA3AF"
             keyboardType="number-pad"
             maxLength={CODE_LENGTH}
             textContentType="oneTimeCode"
@@ -168,7 +169,7 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
         >
           <Text
             className={`text-center font-semibold ${
-              canResend ? 'text-blue-600' : 'text-gray-400'
+              canResend ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'
             }`}
           >
             {isResending
@@ -185,7 +186,7 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
           className="py-2"
           accessibilityRole="button"
         >
-          <Text className="text-center text-gray-500">
+          <Text className="text-center text-gray-500 dark:text-gray-400">
             ¿Escribiste mal tu correo? Vuelve al registro
           </Text>
         </TouchableOpacity>

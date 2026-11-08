@@ -129,8 +129,8 @@ export const UsersCrud: React.FC = () => {
 
   if (!canManageUsers) {
     return (
-      <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-        <Text className="font-semibold text-red-700">
+      <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+        <Text className="font-semibold text-red-700 dark:text-red-400">
           No tienes permiso para administrar usuarios.
         </Text>
       </View>
@@ -254,7 +254,7 @@ export const UsersCrud: React.FC = () => {
       </TouchableOpacity>
 
       <View className="mb-3 flex-row items-center justify-between">
-        <Text className="text-sm text-gray-600">
+        <Text className="text-sm text-gray-600 dark:text-gray-300">
           {hasSearch && !showingSearchResults
             ? 'Buscando usuarios...'
             : `${displayedTotalCount} ${
@@ -274,15 +274,16 @@ export const UsersCrud: React.FC = () => {
           disabled={isLoading || isRefreshing}
           accessibilityRole="button"
         >
-          <Text className="font-semibold text-blue-700">
+          <Text className="font-semibold text-blue-700 dark:text-blue-400">
             {isRefreshing ? 'Actualizando...' : 'Actualizar'}
           </Text>
         </TouchableOpacity>
       </View>
 
       <TextInput
-        className="mb-4 rounded-lg border border-gray-300 bg-white p-3 text-base"
+        className="mb-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 text-base text-gray-900 dark:text-white"
         placeholder="Buscar por número de control o correo"
+        placeholderTextColor="#9CA3AF"
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -294,8 +295,8 @@ export const UsersCrud: React.FC = () => {
       {hasSearch && (isSearching || !showingSearchResults) && !searchError ? (
         <ActivityIndicator className="my-8" size="large" color="#2563eb" />
       ) : searchError ? (
-        <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-          <Text className="mb-3 text-red-700">{searchError}</Text>
+        <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+          <Text className="mb-3 text-red-700 dark:text-red-400">{searchError}</Text>
           <TouchableOpacity
             onPress={() => {
               setSearchError(null);
@@ -303,11 +304,11 @@ export const UsersCrud: React.FC = () => {
             }}
             accessibilityRole="button"
           >
-            <Text className="font-bold text-blue-700">Reintentar búsqueda</Text>
+            <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar búsqueda</Text>
           </TouchableOpacity>
         </View>
       ) : hasSearch && !showingSearchResults ? null : hasSearch && displayedUsers.length === 0 ? (
-        <Text className="py-8 text-center text-gray-500">
+        <Text className="py-8 text-center text-gray-500 dark:text-gray-400">
           No se encontraron usuarios con ese número de control o correo.
         </Text>
       ) : null}
@@ -315,61 +316,65 @@ export const UsersCrud: React.FC = () => {
       {!hasSearch && isLoading && users.length === 0 ? (
         <ActivityIndicator className="my-8" size="large" color="#2563eb" />
       ) : !hasSearch && error && users.length === 0 ? (
-        <View className="rounded-xl border border-red-200 bg-red-50 p-4">
-          <Text className="mb-3 text-red-700">{error}</Text>
+        <View className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
+          <Text className="mb-3 text-red-700 dark:text-red-400">{error}</Text>
           <TouchableOpacity onPress={() => void loadUsers(pageNumber)} accessibilityRole="button">
-            <Text className="font-bold text-blue-700">Reintentar</Text>
+            <Text className="font-bold text-blue-700 dark:text-blue-400">Reintentar</Text>
           </TouchableOpacity>
         </View>
       ) : !hasSearch && users.length === 0 ? (
-        <Text className="py-8 text-center text-gray-500">Todavía no hay usuarios.</Text>
+        <Text className="py-8 text-center text-gray-500 dark:text-gray-400">
+          Todavía no hay usuarios.
+        </Text>
       ) : (
         <>
           {!hasSearch && error && (
-            <View className="mb-3 rounded-xl border border-red-200 bg-red-50 p-3">
-              <Text className="text-red-700">{error}</Text>
+            <View className="mb-3 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-3">
+              <Text className="text-red-700 dark:text-red-400">{error}</Text>
             </View>
           )}
           {displayedUsers.map((user) => (
             <View
               key={String(user.id)}
-              className="mb-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm"
+              className="mb-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm"
             >
               <View className="mb-3 flex-row items-start justify-between gap-3">
                 <View className="flex-1">
-                  <Text className="text-base font-bold text-gray-900">
+                  <Text className="text-base font-bold text-gray-900 dark:text-white">
                     {user.firstName} {user.lastNamePaternal} {user.lastNameMaternal}
                   </Text>
-                  <Text className="mt-1 text-gray-600">{user.email}</Text>
+                  <Text className="mt-1 text-gray-600 dark:text-gray-300">{user.email}</Text>
                 </View>
-                <Text className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+                <Text className="rounded-full bg-blue-50 dark:bg-blue-900/40 px-3 py-1 text-xs font-bold text-blue-700 dark:text-blue-300">
                   {user.role}
                 </Text>
               </View>
-              <Text className="mb-1 text-sm text-gray-600">
+              <Text className="mb-1 text-sm text-gray-600 dark:text-gray-300">
                 Número de control: {user.controlNumber}
               </Text>
               {typeof user.emailVerified === 'boolean' && (
-                <Text className="mb-3 text-sm text-gray-600">
+                <Text className="mb-3 text-sm text-gray-600 dark:text-gray-300">
                   Correo {user.emailVerified ? 'verificado' : 'sin verificar'}
                 </Text>
               )}
               <View className="flex-row justify-end gap-3">
                 <TouchableOpacity
-                  className="rounded-lg border border-blue-200 px-4 py-2"
+                  className="rounded-full border border-blue-200 bg-blue-100 px-4 py-1.5 dark:border-blue-800 dark:bg-blue-500"
                   onPress={() => openEditForm(user)}
                   accessibilityRole="button"
                   accessibilityLabel={`Editar a ${user.firstName}`}
                 >
-                  <Text className="font-semibold text-blue-700">Editar</Text>
+                  <Text className="text-sm font-semibold text-blue-700 dark:text-white">Editar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  className="rounded-lg border border-red-200 px-4 py-2"
+                  className="rounded-full border border-red-200 bg-red-100 px-4 py-1.5 dark:border-red-800 dark:bg-red-500"
                   onPress={() => confirmDelete(user)}
                   accessibilityRole="button"
                   accessibilityLabel={`Eliminar a ${user.firstName}`}
                 >
-                  <Text className="font-semibold text-red-600">Eliminar</Text>
+                  <Text className="text-sm font-semibold text-red-700 dark:text-white">
+                    Eliminar
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -395,7 +400,7 @@ export const UsersCrud: React.FC = () => {
         >
           <View className="flex-1 justify-center bg-black/40 px-5 py-8">
             <ScrollView
-              className="max-h-[90%] rounded-xl bg-white"
+              className="max-h-[90%] rounded-xl bg-white dark:bg-gray-800"
               contentContainerClassName="p-5"
               keyboardShouldPersistTaps="handled"
             >
@@ -491,16 +496,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
     }
   };
 
-  const textInputClass = 'mb-3 rounded-lg border border-gray-300 p-3 text-base';
+  const textInputClass =
+    'mb-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-base text-gray-900 dark:text-white';
 
   return (
     <>
-      <Text className="mb-4 text-xl font-bold text-gray-900">
+      <Text className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
         {user ? 'Editar usuario' : 'Crear usuario'}
       </Text>
       <TextInput
         className={textInputClass}
         placeholder="Número de control"
+        placeholderTextColor="#9CA3AF"
         keyboardType="number-pad"
         maxLength={15}
         value={controlNumber}
@@ -509,6 +516,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
       <TextInput
         className={textInputClass}
         placeholder="Nombre(s)"
+        placeholderTextColor="#9CA3AF"
         autoCapitalize="words"
         maxLength={50}
         value={firstName}
@@ -517,6 +525,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
       <TextInput
         className={textInputClass}
         placeholder="Apellido paterno"
+        placeholderTextColor="#9CA3AF"
         autoCapitalize="words"
         maxLength={30}
         value={lastNamePaternal}
@@ -525,6 +534,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
       <TextInput
         className={textInputClass}
         placeholder="Apellido materno"
+        placeholderTextColor="#9CA3AF"
         autoCapitalize="words"
         maxLength={30}
         value={lastNameMaternal}
@@ -533,6 +543,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
       <TextInput
         className={textInputClass}
         placeholder="Correo electrónico"
+        placeholderTextColor="#9CA3AF"
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -544,6 +555,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
         <TextInput
           className={textInputClass}
           placeholder="Contraseña (mínimo 8 caracteres)"
+          placeholderTextColor="#9CA3AF"
           secureTextEntry
           autoCapitalize="none"
           value={password}
@@ -551,19 +563,27 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
         />
       )}
 
-      <Text className="mb-2 font-semibold text-gray-700">Rol</Text>
+      <Text className="mb-2 font-semibold text-gray-700 dark:text-gray-300">Rol</Text>
       <View className="mb-4 flex-row flex-wrap gap-2">
         {USER_ROLES.map((option) => (
           <TouchableOpacity
             key={option}
             className={`rounded-lg border px-3 py-2 ${
-              role === option ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
+              role === option
+                ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/40'
+                : 'border-gray-300 dark:border-gray-700'
             }`}
             onPress={() => setRole(option)}
             accessibilityRole="button"
             accessibilityState={{ selected: role === option }}
           >
-            <Text className={role === option ? 'font-semibold text-blue-700' : 'text-gray-600'}>
+            <Text
+              className={
+                role === option
+                  ? 'font-semibold text-blue-700 dark:text-blue-300'
+                  : 'text-gray-600 dark:text-gray-300'
+              }
+            >
               {option}
             </Text>
           </TouchableOpacity>
@@ -571,13 +591,13 @@ const UserForm: React.FC<UserFormProps> = ({ user, onCancel, onSubmit }) => {
       </View>
 
       <View className="mb-5 flex-row items-center justify-between">
-        <Text className="font-semibold text-gray-700">Correo verificado</Text>
+        <Text className="font-semibold text-gray-700 dark:text-gray-300">Correo verificado</Text>
         <Switch value={emailVerified} onValueChange={setEmailVerified} />
       </View>
 
       <View className="flex-row justify-end gap-3">
         <TouchableOpacity className="rounded-lg px-4 py-3" onPress={onCancel}>
-          <Text className="font-semibold text-gray-600">Cancelar</Text>
+          <Text className="font-semibold text-gray-600 dark:text-gray-300">Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity
           className={`rounded-lg px-4 py-3 ${isSaving ? 'bg-blue-400' : 'bg-blue-600'}`}

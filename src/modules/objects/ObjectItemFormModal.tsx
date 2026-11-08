@@ -15,6 +15,7 @@ import type {
   ObjectItemFields,
   ObjectItemPhoto,
 } from '../../api/objects/objectsApi';
+import { getPickedPhoto } from '../imagePickerPhoto';
 
 interface ObjectItemFormModalProps {
   visible: boolean;
@@ -66,11 +67,7 @@ export const ObjectItemFormModal: React.FC<ObjectItemFormModalProps> = ({
         return;
       }
 
-      setPhoto({
-        uri: asset.uri,
-        name: asset.fileName ?? asset.uri.split('/').pop() ?? 'objeto.jpg',
-        type: asset.mimeType ?? 'image/jpeg',
-      });
+      setPhoto(getPickedPhoto(asset, 'objeto.jpg'));
     } catch (error) {
       Alert.alert(
         'No se pudo abrir la galería',
@@ -112,68 +109,84 @@ export const ObjectItemFormModal: React.FC<ObjectItemFormModalProps> = ({
     }
   };
 
+  const inputClass =
+    'mb-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-base text-gray-900 dark:text-white';
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <View className="flex-1 justify-center bg-black/40 px-6">
         <ScrollView
-          className="max-h-[85%] rounded-xl bg-white"
+          className="max-h-[85%] rounded-xl bg-white dark:bg-gray-800"
           contentContainerClassName="p-5"
           keyboardShouldPersistTaps="handled"
         >
-          <Text className="mb-4 text-xl font-bold text-gray-900">
+          <Text className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
             {item ? 'Editar objeto' : `Publicar objeto ${itemType}`}
           </Text>
 
           <TextInput
-            className="mb-3 rounded-lg border border-gray-300 p-3 text-base"
+            className={inputClass}
             placeholder="Categoría"
+            placeholderTextColor="#9CA3AF"
             value={category}
             onChangeText={setCategory}
             maxLength={50}
           />
           <TextInput
-            className="mb-3 rounded-lg border border-gray-300 p-3 text-base"
+            className={inputClass}
             placeholder="Artículo"
+            placeholderTextColor="#9CA3AF"
             value={article}
             onChangeText={setArticle}
             maxLength={50}
           />
           <TextInput
-            className="mb-3 rounded-lg border border-gray-300 p-3 text-base"
+            className={inputClass}
             placeholder="Color"
+            placeholderTextColor="#9CA3AF"
             value={color}
             onChangeText={setColor}
             maxLength={50}
           />
           <TextInput
-            className="mb-3 rounded-lg border border-gray-300 p-3 text-base"
+            className={inputClass}
             placeholder="Lugar donde se perdió o encontró"
+            placeholderTextColor="#9CA3AF"
             value={location}
             onChangeText={setLocation}
             maxLength={50}
           />
           <TextInput
-            className="mb-4 min-h-24 rounded-lg border border-gray-300 p-3 text-base"
+            className="mb-4 min-h-24 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-base text-gray-900 dark:text-white"
             placeholder="Descripción"
+            placeholderTextColor="#9CA3AF"
             value={description}
             onChangeText={setDescription}
             multiline
             textAlignVertical="top"
           />
 
-          <Text className="mb-2 font-semibold text-gray-700">Estado</Text>
+          <Text className="mb-2 font-semibold text-gray-700 dark:text-gray-300">Estado</Text>
           <View className="mb-4 flex-row gap-3">
             {['Activo', 'Devuelto'].map((option) => (
               <TouchableOpacity
                 key={option}
                 className={`rounded-lg border px-4 py-2 ${
-                  status === option ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
+                  status === option
+                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/40'
+                    : 'border-gray-300 dark:border-gray-700'
                 }`}
                 onPress={() => setStatus(option)}
                 accessibilityRole="button"
                 accessibilityState={{ selected: status === option }}
               >
-                <Text className={status === option ? 'font-semibold text-blue-700' : 'text-gray-600'}>
+                <Text
+                  className={
+                    status === option
+                      ? 'font-semibold text-blue-700 dark:text-blue-300'
+                      : 'text-gray-600 dark:text-gray-300'
+                  }
+                >
                   {option}
                 </Text>
               </TouchableOpacity>
@@ -181,11 +194,11 @@ export const ObjectItemFormModal: React.FC<ObjectItemFormModalProps> = ({
           </View>
 
           <TouchableOpacity
-            className="mb-3 self-start rounded-lg border border-blue-200 px-4 py-3"
+            className="mb-3 self-start rounded-lg border border-blue-200 dark:border-blue-800 px-4 py-3"
             onPress={() => void handlePickPhoto()}
             accessibilityRole="button"
           >
-            <Text className="font-semibold text-blue-700">
+            <Text className="font-semibold text-blue-700 dark:text-blue-400">
               {photo ? 'Cambiar foto' : item?.photoUrl ? 'Cambiar foto' : 'Adjuntar foto'}
             </Text>
           </TouchableOpacity>
@@ -202,14 +215,14 @@ export const ObjectItemFormModal: React.FC<ObjectItemFormModalProps> = ({
                 onPress={() => setPhoto(null)}
                 accessibilityRole="button"
               >
-                <Text className="font-semibold text-red-600">Quitar foto nueva</Text>
+                <Text className="font-semibold text-red-600 dark:text-red-400">Quitar foto nueva</Text>
               </TouchableOpacity>
             </View>
           )}
 
           <View className="flex-row justify-end gap-3">
             <TouchableOpacity className="rounded-lg px-4 py-3" onPress={onCancel}>
-              <Text className="font-semibold text-gray-600">Cancelar</Text>
+              <Text className="font-semibold text-gray-600 dark:text-gray-300">Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               className={`rounded-lg px-4 py-3 ${isSaving ? 'bg-blue-400' : 'bg-blue-600'}`}

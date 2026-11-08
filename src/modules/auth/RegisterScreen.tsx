@@ -32,9 +32,10 @@ interface FormFieldProps extends TextInputProps {
 
 const FormField: React.FC<FormFieldProps> = ({ label, ...inputProps }) => (
   <View className="mb-4">
-    <Text className="text-sm font-semibold text-gray-700 mb-1">{label}</Text>
+    <Text className="title3">{label}</Text>
     <TextInput
-      className="bg-white border border-gray-300 rounded-lg p-4 text-base"
+      className="bg-white border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg p-4 text-base text-gray-900 dark:text-white"
+      placeholderTextColor="#9CA3AF"
       accessibilityLabel={label}
       {...inputProps}
     />
@@ -127,7 +128,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-gray-50"
+      className="flex-1 bg-gray-50 dark:bg-gray-900"
     >
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -138,10 +139,10 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           paddingVertical: 24,
         }}
       >
-        <Text className="text-3xl font-bold text-blue-900 mb-2 mt-4 text-center">
+        <Text className="mt-4 title1">
           Crear Cuenta
         </Text>
-        <Text className="text-base text-gray-500 mb-8 text-center">
+        <Text className="title2">
           Únete a Avisos TEC
         </Text>
 
@@ -232,7 +233,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           className="py-2"
           accessibilityRole="button"
         >
-          <Text className="text-center text-blue-600 font-semibold">
+          <Text className="title4">
             ¿Ya tienes cuenta? Inicia sesión aquí
           </Text>
         </TouchableOpacity>
