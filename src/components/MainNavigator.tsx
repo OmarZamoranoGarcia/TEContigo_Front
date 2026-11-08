@@ -376,7 +376,7 @@ export const MainNavigator = () => {
 
               {/* Botón de Modo Oscuro */}
               <TouchableOpacity
-                className="flex-row items-center justify-between bg-gray-200 dark:bg-black rounded-full px-2 py-2 w-40 mb-8 border border-gray-300 dark:border-gray-800"
+                className="flex-row items-center justify-between gap-2 bg-gray-200 dark:bg-black rounded-full px-2 py-2 w-1/2 mb-8 border border-gray-300 dark:border-gray-800"
                 onPress={toggleColorScheme}
                 activeOpacity={0.8}
                 accessibilityRole="button"
@@ -395,7 +395,7 @@ export const MainNavigator = () => {
                     <Text className="text-black font-bold text-sm flex-1 text-center pl-2">
                       DAY MODE
                     </Text>
-                    <View className="bg-white rounded-full p-2 shadow-sm border border-gray-300">
+                    <View className="bg-white rounded-full p-2 shadow-sm border-gray-300">
                       <Feather name="sun" size={20} color="black" />
                     </View>
                   </>

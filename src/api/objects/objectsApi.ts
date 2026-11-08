@@ -1,5 +1,6 @@
 import { request } from '../auth/client';
-import { API_BASE_URL } from '../../config/api';
+import { appendPhoto } from '../photoUpload';
+import { API_BASE_URL, PHOTO_UPLOAD_TIMEOUT_MS } from '../../config/api';
 
 export type ObjectItemId = number | string;
 export type ObjectItemKind = 'lost' | 'found';
@@ -87,8 +88,9 @@ export const objectsApi = {
   create: async (kind: ObjectItemKind, fields: ObjectItemFields, token: string) => {
     const response = await request<ObjectItemResponse | null>(resourcePath[kind], {
       method: 'POST',
-      body: toFormData(fields),
+      body: await toFormData(fields),
       token,
+      ...(fields.photo ? { timeoutMs: PHOTO_UPLOAD_TIMEOUT_MS } : {}),
     });
     assertSuccess(response);
   },
@@ -103,8 +105,9 @@ export const objectsApi = {
       `${resourcePath[kind]}/${encodeURIComponent(id)}`,
       {
         method: 'PUT',
-        body: toFormData(fields),
+        body: await toFormData(fields),
         token,
+        ...(fields.photo ? { timeoutMs: PHOTO_UPLOAD_TIMEOUT_MS } : {}),
       }
     );
     assertSuccess(response);
@@ -119,7 +122,7 @@ export const objectsApi = {
   },
 };
 
-function toFormData(fields: ObjectItemFields): FormData {
+async function toFormData(fields: ObjectItemFields): Promise<FormData> {
   const formData = new FormData();
   formData.append('Category', fields.category);
   formData.append('Article', fields.article);
@@ -129,14 +132,7 @@ function toFormData(fields: ObjectItemFields): FormData {
   formData.append('Status', fields.status);
 
   if (fields.photo) {
-    formData.append(
-      'Photo',
-      {
-        uri: fields.photo.uri,
-        name: fields.photo.name,
-        type: fields.photo.type,
-      } as unknown as Blob
-    );
+    await appendPhoto(formData, fields.photo);
   }
 
   return formData;

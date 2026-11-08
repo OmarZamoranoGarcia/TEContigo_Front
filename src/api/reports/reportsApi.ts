@@ -1,5 +1,6 @@
 import { request } from '../auth/client';
-import { API_BASE_URL } from '../../config/api';
+import { appendPhoto } from '../photoUpload';
+import { API_BASE_URL, PHOTO_UPLOAD_TIMEOUT_MS } from '../../config/api';
 
 export type ReportId = number | string;
 
@@ -80,8 +81,9 @@ export const reportsApi = {
   create: async (fields: ReportFields, token: string) => {
     const response = await request<ReportResponse>('/api/Reports', {
       method: 'POST',
-      body: toFormData(fields),
+      body: await toFormData(fields),
       token,
+      ...(fields.photo ? { timeoutMs: PHOTO_UPLOAD_TIMEOUT_MS } : {}),
     });
     assertSuccess(response);
   },
@@ -91,8 +93,9 @@ export const reportsApi = {
       `/api/Reports/${encodeURIComponent(id)}`,
       {
         method: 'PUT',
-        body: toFormData(fields),
+        body: await toFormData(fields),
         token,
+        ...(fields.photo ? { timeoutMs: PHOTO_UPLOAD_TIMEOUT_MS } : {}),
       }
     );
     assertSuccess(response);
@@ -110,7 +113,7 @@ export const reportsApi = {
   },
 };
 
-function toFormData(fields: UpdateReportFields): FormData {
+async function toFormData(fields: UpdateReportFields): Promise<FormData> {
   const formData = new FormData();
 
   if (fields.name !== undefined) formData.append('Name', fields.name);
@@ -118,14 +121,7 @@ function toFormData(fields: UpdateReportFields): FormData {
   if (fields.description !== undefined) formData.append('Description', fields.description);
   if (fields.status !== undefined) formData.append('Status', fields.status);
   if (fields.photo) {
-    formData.append(
-      'Photo',
-      {
-        uri: fields.photo.uri,
-        name: fields.photo.name,
-        type: fields.photo.type,
-      } as unknown as Blob
-    );
+    await appendPhoto(formData, fields.photo);
   }
 
   return formData;

@@ -15,6 +15,7 @@ import type {
   ObjectItemFields,
   ObjectItemPhoto,
 } from '../../api/objects/objectsApi';
+import { getPickedPhoto } from '../imagePickerPhoto';
 
 interface ObjectItemFormModalProps {
   visible: boolean;
@@ -66,11 +67,7 @@ export const ObjectItemFormModal: React.FC<ObjectItemFormModalProps> = ({
         return;
       }
 
-      setPhoto({
-        uri: asset.uri,
-        name: asset.fileName ?? asset.uri.split('/').pop() ?? 'objeto.jpg',
-        type: asset.mimeType ?? 'image/jpeg',
-      });
+      setPhoto(getPickedPhoto(asset, 'objeto.jpg'));
     } catch (error) {
       Alert.alert(
         'No se pudo abrir la galería',

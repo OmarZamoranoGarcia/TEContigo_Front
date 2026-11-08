@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import type { Report, ReportFields, ReportPhoto } from '../../api/reports/reportsApi';
+import { getPickedPhoto } from '../imagePickerPhoto';
 
 interface ReportFormModalProps {
   visible: boolean;
@@ -54,11 +55,7 @@ export const ReportFormModal: React.FC<ReportFormModalProps> = ({
         return;
       }
 
-      setPhoto({
-        uri: asset.uri,
-        name: asset.fileName ?? asset.uri.split('/').pop() ?? 'reporte.jpg',
-        type: asset.mimeType ?? 'image/jpeg',
-      });
+      setPhoto(getPickedPhoto(asset, 'reporte.jpg'));
     } catch (error) {
       Alert.alert(
         'No se pudo abrir la galería',

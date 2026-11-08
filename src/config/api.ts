@@ -14,3 +14,4 @@ export const API_BASE_URL =
     : configuredApiUrl;
 
 export const REQUEST_TIMEOUT_MS = 15000;
+export const PHOTO_UPLOAD_TIMEOUT_MS = 120000;
